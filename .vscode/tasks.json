@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "melos bs",
+            "command": "melos bootstrap",
+            "type": "shell",
+            "args": [],
+            "problemMatcher": [                
+            ],
+            "presentation": {
+                "reveal": "silent"
+            },
+            "group": "build"
+        },
+        {
+            "label": "generate",
+            "command": "melos run generate",
+            "type": "shell",
+            "args": [],
+            "problemMatcher": [                
+                "$dart-build_runner"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

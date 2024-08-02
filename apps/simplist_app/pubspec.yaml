@@ -1,0 +1,32 @@
+name: simplist_app
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.4 <4.0.0'
+
+dependencies:
+  auto_route: ^9.1.0
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.20.5
+  freezed_annotation: ^2.4.4
+  hooks_riverpod: ^2.5.1
+  pocketbase: ^0.18.1
+  riverpod: ^2.5.1
+  rivership: ^0.1.2
+  rxdart: ^0.28.0
+
+dev_dependencies:
+  auto_route_generator: ^9.0.0
+  build_runner: ^2.4.11
+  flutter_test:
+    sdk: flutter
+  freezed: ^2.5.2
+  json_serializable: ^6.8.0
+  lintervention: ^0.1.1
+  rivership_test: ^0.1.0+2
+
+flutter:
+  uses-material-design: true
