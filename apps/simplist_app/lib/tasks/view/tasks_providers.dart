@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:simplist_app/common/view/debounce_provider.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/domain/tasks_repository.dart';
@@ -12,15 +13,20 @@ final $tasks =
 );
 
 class Tasks extends AutoDisposeFamilyStreamNotifier<List<Task>, TaskFilter> {
-  Timer? _timer;
   Completer<void>? _flushing;
 
   @override
   Stream<List<Task>> build(TaskFilter arg) async* {
     final repo = await ref.watch($taskRepository.future);
+
+    ref.listen(
+      $onDebounceFlush,
+      (previous, next) => _updateAll(),
+    );
+
     await for (final e in repo.watchCompleted(filter: arg)) {
       // Ignore updates while debouncing
-      if (_timer == null) yield e;
+      if (ref.read($debounce) == false) yield e;
     }
   }
 
@@ -40,14 +46,8 @@ class Tasks extends AutoDisposeFamilyStreamNotifier<List<Task>, TaskFilter> {
         AsyncData(updated),
       );
 
-      _scheduleUpdate().ignore();
+      ref.read($debounce.notifier).bump();
     }
-  }
-
-  Future<void> _scheduleUpdate() async {
-    await _flushing?.future;
-    _timer?.cancel();
-    _timer = Timer(const Duration(seconds: 1), _updateAll);
   }
 
   Future<void> _updateAll() async {
@@ -61,7 +61,6 @@ class Tasks extends AutoDisposeFamilyStreamNotifier<List<Task>, TaskFilter> {
       }
 
       _flushing?.complete(null);
-      _timer = null;
     }
   }
 }
