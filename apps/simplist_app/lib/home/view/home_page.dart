@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simplist_app/auth/view/auth_notifier.dart';
-import 'package:simplist_app/common/view/spacing.dart';
+import 'package:simplist_app/common/routing/router.gr.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/view/task_sliver_list.dart';
 
@@ -12,6 +12,11 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        heroTag: "add_task",
+        onPressed: () => context.router.navigate(AddTaskRoute()),
+        child: const Icon(Icons.add_rounded),
+      ),
       body: CustomScrollView(
         slivers: [
           SliverAppBar.large(
@@ -23,11 +28,18 @@ class HomePage extends HookConsumerWidget {
               ),
             ],
           ),
-          TaskSliverList(filter: TaskFilter.uncompletedAndToday),
-          const SliverToBoxAdapter(child: Divider(height: Spacers.l)),
-          TaskSliverList(filter: TaskFilter.uncompletedAndNotToday),
-          const SliverToBoxAdapter(child: Divider(height: Spacers.l)),
-          TaskSliverList(filter: TaskFilter.completedToday),
+          const TaskSliverList(
+            header: Text("Today"),
+            filter: TaskFilter.uncompletedAndToday,
+          ),
+          const TaskSliverList(
+            header: Text("Anytime"),
+            filter: TaskFilter.uncompletedAndNotToday,
+          ),
+          const TaskSliverList(
+            header: Text("Logbook"),
+            filter: TaskFilter.completedToday,
+          ),
         ],
       ),
     );

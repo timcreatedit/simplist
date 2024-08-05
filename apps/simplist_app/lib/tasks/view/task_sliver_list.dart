@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:implicitly_animated_reorderable_list_2/implicitly_animated_reorderable_list_2.dart';
+import 'package:simplist_app/common/view/extensions/context_convenience.dart';
+import 'package:simplist_app/common/view/spacing.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/view/tasks_providers.dart';
 import 'package:simplist_app/tasks/view/widgets/task_list_tile.dart';
@@ -8,10 +10,12 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 class TaskSliverList extends HookConsumerWidget {
   const TaskSliverList({
+    this.header,
     this.filter = TaskFilter.none,
     super.key,
   });
 
+  final Widget? header;
   final TaskFilter filter;
 
   @override
@@ -19,27 +23,51 @@ class TaskSliverList extends HookConsumerWidget {
     final tasks = ref.watch($tasks(filter));
     final notifier = ref.watch($tasks(filter).notifier);
     return switch (tasks) {
-      AsyncData(value: final tasks) => SliverImplicitlyAnimatedList(
-          items: tasks,
-          areItemsTheSame: (a, b) => a.id == b.id,
-          itemBuilder: (context, animation, item, i) {
-            final anim = CurvedAnimation(
-              curve: Curves.easeInOutCubicEmphasized,
-              parent: animation,
-              reverseCurve: Curves.easeInOutCubicEmphasized.flipped,
-            );
-            return SizeTransition(
-              sizeFactor: anim,
-              child: FadeTransition(
-                opacity: anim,
-                child: TaskListTile(
-                  key: ValueKey(item.id),
-                  task: item,
-                  notifier: notifier,
-                ),
+      AsyncData(value: final tasks) => MultiSliver(
+          children: [
+            SliverAnimatedSizeSwitcher(
+              child: SliverPinnedHeader(
+                child: switch ((header, tasks)) {
+                  (null, _) || (_, []) => const SizedBox.shrink(),
+                  (final title?, [...]) => Container(
+                      color: context.colorScheme.surface,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Spacers.m,
+                        vertical: Spacers.m,
+                      ),
+                      child: Row(
+                        children: [
+                          title,
+                          const Expanded(child: Divider(indent: Spacers.s)),
+                        ],
+                      ),
+                    ),
+                },
               ),
-            );
-          },
+            ),
+            SliverImplicitlyAnimatedList(
+              items: tasks,
+              areItemsTheSame: (a, b) => a.id == b.id,
+              itemBuilder: (context, animation, item, i) {
+                final anim = CurvedAnimation(
+                  curve: Curves.easeInOutCubicEmphasized,
+                  parent: animation,
+                  reverseCurve: Curves.easeInOutCubicEmphasized.flipped,
+                );
+                return SizeTransition(
+                  sizeFactor: anim,
+                  child: FadeTransition(
+                    opacity: anim,
+                    child: TaskListTile(
+                      key: ValueKey(item.id),
+                      task: item,
+                      notifier: notifier,
+                    ),
+                  ),
+                );
+              },
+            )
+          ],
         ),
       _ => const SliverToBoxAdapter()
     };

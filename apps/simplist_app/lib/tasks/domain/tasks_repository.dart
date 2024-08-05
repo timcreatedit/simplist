@@ -55,11 +55,26 @@ interface class TasksRepository {
     return [for (final record in records) Task.fromJson(record.toJson())];
   }
 
+  Future<Task?> get(String id) async {
+    try {
+      final record = await _collection.getOne(id);
+      return Task.fromJson(record.toJson());
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<Task> create({
     required String title,
-    required int id,
+    ScheduleType scheduled = ScheduleType.none,
   }) async {
-    final model = await _collection.create(body: {'id': id, 'title': title});
+    final model = await _collection.create(
+      body: {
+        'title': title,
+        'scheduled': scheduled.name,
+        'owner': user.id,
+      },
+    );
     return Task.fromJson(model.toJson());
   }
 
