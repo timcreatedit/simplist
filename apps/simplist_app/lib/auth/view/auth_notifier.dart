@@ -25,7 +25,7 @@ class AuthNotifier extends AutoDisposeStreamNotifier<User?> {
 
       final task = await AsyncValue.guard(() async {
         await repo.signInWithPassword(
-          emailOrUsername: emailOrUsername,
+          emailOrUsername: emailOrUsername.trim(),
           password: password,
         );
       });

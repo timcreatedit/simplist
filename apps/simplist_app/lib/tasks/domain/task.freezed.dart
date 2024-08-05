@@ -22,9 +22,13 @@ Task _$TaskFromJson(Map<String, dynamic> json) {
 mixin _$Task {
   String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
-  bool get completed => throw _privateConstructorUsedError;
   DateTime get created => throw _privateConstructorUsedError;
   DateTime get updated => throw _privateConstructorUsedError;
+  ScheduleType get scheduled => throw _privateConstructorUsedError;
+  @NullablePbDateConverter()
+  DateTime? get completedOn => throw _privateConstructorUsedError;
+  @NullablePbDateConverter()
+  DateTime? get scheduledOn => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -39,9 +43,11 @@ abstract class $TaskCopyWith<$Res> {
   $Res call(
       {String id,
       String title,
-      bool completed,
       DateTime created,
-      DateTime updated});
+      DateTime updated,
+      ScheduleType scheduled,
+      @NullablePbDateConverter() DateTime? completedOn,
+      @NullablePbDateConverter() DateTime? scheduledOn});
 }
 
 /// @nodoc
@@ -59,9 +65,11 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
   $Res call({
     Object? id = null,
     Object? title = null,
-    Object? completed = null,
     Object? created = null,
     Object? updated = null,
+    Object? scheduled = null,
+    Object? completedOn = freezed,
+    Object? scheduledOn = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -72,10 +80,6 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      completed: null == completed
-          ? _value.completed
-          : completed // ignore: cast_nullable_to_non_nullable
-              as bool,
       created: null == created
           ? _value.created
           : created // ignore: cast_nullable_to_non_nullable
@@ -84,6 +88,18 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
           ? _value.updated
           : updated // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      scheduled: null == scheduled
+          ? _value.scheduled
+          : scheduled // ignore: cast_nullable_to_non_nullable
+              as ScheduleType,
+      completedOn: freezed == completedOn
+          ? _value.completedOn
+          : completedOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      scheduledOn: freezed == scheduledOn
+          ? _value.scheduledOn
+          : scheduledOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -98,9 +114,11 @@ abstract class _$$TaskImplCopyWith<$Res> implements $TaskCopyWith<$Res> {
   $Res call(
       {String id,
       String title,
-      bool completed,
       DateTime created,
-      DateTime updated});
+      DateTime updated,
+      ScheduleType scheduled,
+      @NullablePbDateConverter() DateTime? completedOn,
+      @NullablePbDateConverter() DateTime? scheduledOn});
 }
 
 /// @nodoc
@@ -115,9 +133,11 @@ class __$$TaskImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? title = null,
-    Object? completed = null,
     Object? created = null,
     Object? updated = null,
+    Object? scheduled = null,
+    Object? completedOn = freezed,
+    Object? scheduledOn = freezed,
   }) {
     return _then(_$TaskImpl(
       id: null == id
@@ -128,10 +148,6 @@ class __$$TaskImplCopyWithImpl<$Res>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      completed: null == completed
-          ? _value.completed
-          : completed // ignore: cast_nullable_to_non_nullable
-              as bool,
       created: null == created
           ? _value.created
           : created // ignore: cast_nullable_to_non_nullable
@@ -140,6 +156,18 @@ class __$$TaskImplCopyWithImpl<$Res>
           ? _value.updated
           : updated // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      scheduled: null == scheduled
+          ? _value.scheduled
+          : scheduled // ignore: cast_nullable_to_non_nullable
+              as ScheduleType,
+      completedOn: freezed == completedOn
+          ? _value.completedOn
+          : completedOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      scheduledOn: freezed == scheduledOn
+          ? _value.scheduledOn
+          : scheduledOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -150,9 +178,11 @@ class _$TaskImpl extends _Task {
   const _$TaskImpl(
       {required this.id,
       required this.title,
-      required this.completed,
       required this.created,
-      required this.updated})
+      required this.updated,
+      this.scheduled = ScheduleType.none,
+      @NullablePbDateConverter() this.completedOn,
+      @NullablePbDateConverter() this.scheduledOn})
       : super._();
 
   factory _$TaskImpl.fromJson(Map<String, dynamic> json) =>
@@ -163,15 +193,22 @@ class _$TaskImpl extends _Task {
   @override
   final String title;
   @override
-  final bool completed;
-  @override
   final DateTime created;
   @override
   final DateTime updated;
+  @override
+  @JsonKey()
+  final ScheduleType scheduled;
+  @override
+  @NullablePbDateConverter()
+  final DateTime? completedOn;
+  @override
+  @NullablePbDateConverter()
+  final DateTime? scheduledOn;
 
   @override
   String toString() {
-    return 'Task(id: $id, title: $title, completed: $completed, created: $created, updated: $updated)';
+    return 'Task(id: $id, title: $title, created: $created, updated: $updated, scheduled: $scheduled, completedOn: $completedOn, scheduledOn: $scheduledOn)';
   }
 
   @override
@@ -181,16 +218,20 @@ class _$TaskImpl extends _Task {
             other is _$TaskImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
-            (identical(other.completed, completed) ||
-                other.completed == completed) &&
             (identical(other.created, created) || other.created == created) &&
-            (identical(other.updated, updated) || other.updated == updated));
+            (identical(other.updated, updated) || other.updated == updated) &&
+            (identical(other.scheduled, scheduled) ||
+                other.scheduled == scheduled) &&
+            (identical(other.completedOn, completedOn) ||
+                other.completedOn == completedOn) &&
+            (identical(other.scheduledOn, scheduledOn) ||
+                other.scheduledOn == scheduledOn));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, title, completed, created, updated);
+  int get hashCode => Object.hash(runtimeType, id, title, created, updated,
+      scheduled, completedOn, scheduledOn);
 
   @JsonKey(ignore: true)
   @override
@@ -210,9 +251,11 @@ abstract class _Task extends Task {
   const factory _Task(
       {required final String id,
       required final String title,
-      required final bool completed,
       required final DateTime created,
-      required final DateTime updated}) = _$TaskImpl;
+      required final DateTime updated,
+      final ScheduleType scheduled,
+      @NullablePbDateConverter() final DateTime? completedOn,
+      @NullablePbDateConverter() final DateTime? scheduledOn}) = _$TaskImpl;
   const _Task._() : super._();
 
   factory _Task.fromJson(Map<String, dynamic> json) = _$TaskImpl.fromJson;
@@ -222,11 +265,17 @@ abstract class _Task extends Task {
   @override
   String get title;
   @override
-  bool get completed;
-  @override
   DateTime get created;
   @override
   DateTime get updated;
+  @override
+  ScheduleType get scheduled;
+  @override
+  @NullablePbDateConverter()
+  DateTime? get completedOn;
+  @override
+  @NullablePbDateConverter()
+  DateTime? get scheduledOn;
   @override
   @JsonKey(ignore: true)
   _$$TaskImplCopyWith<_$TaskImpl> get copyWith =>

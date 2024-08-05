@@ -7,8 +7,10 @@ environment:
   sdk: '>=3.4.4 <4.0.0'
 
 dependencies:
+  animated_reorderable_list: ^1.0.8
   animations: ^2.0.11
   auto_route: ^9.1.0
+  clock: ^1.1.1
   flex_seed_scheme: ^3.1.2
   flutter:
     sdk: flutter
@@ -18,11 +20,13 @@ dependencies:
   formz: ^0.7.0
   freezed_annotation: ^2.4.4
   hooks_riverpod: ^2.5.1
+  implicitly_animated_reorderable_list_2: ^0.6.0
   pocketbase: ^0.18.1
   pocketbased: ^0.1.0
   riverpod: ^2.5.1
   rivership: ^0.1.2
   rxdart: ^0.28.0
+  sliver_tools: ^0.2.12
 
 dev_dependencies:
   auto_route_generator: ^9.0.0
