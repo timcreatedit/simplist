@@ -1,0 +1,8 @@
+{
+    "@@locale": "en",
+    "appName": "simplist",
+    "onboardingDisplay": "Make it simple, make it work.",
+    "getStartedAction": "Get Started",
+    "signInPrompt": "Have an Account?",
+    "signInAction": "Sign In"
+}

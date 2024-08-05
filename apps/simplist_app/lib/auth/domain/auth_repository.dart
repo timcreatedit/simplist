@@ -6,8 +6,9 @@ import 'package:rxdart/subjects.dart';
 import 'package:simplist_app/auth/domain/user.dart';
 import 'package:simplist_app/common/data/pocketbase_provider.dart';
 
-final $authRepository =
-    Provider((ref) => AuthRepository(ref.watch($pocketbase)));
+final $authRepository = FutureProvider(
+  (ref) async => AuthRepository(await ref.watch($pocketbase.future)),
+);
 
 interface class AuthRepository {
   AuthRepository(this.pb) {

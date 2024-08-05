@@ -10,8 +10,9 @@ final $auth = StreamNotifierProvider.autoDispose<AuthNotifier, User?>(
 
 class AuthNotifier extends AutoDisposeStreamNotifier<User?> {
   @override
-  Stream<User?> build() {
-    return ref.watch($authRepository).onAuthStateChanged;
+  Stream<User?> build() async* {
+    final repo = await ref.watch($authRepository.future);
+    yield* repo.onAuthStateChanged;
   }
 
   Future<void> signIn({
@@ -20,12 +21,13 @@ class AuthNotifier extends AutoDisposeStreamNotifier<User?> {
   }) async {
     if (state case AsyncData(value: null) || AsyncError()) {
       state = const AsyncLoading();
+      final repo = await ref.watch($authRepository.future);
 
       final task = await AsyncValue.guard(() async {
-        await ref.read($authRepository).signInWithPassword(
-              emailOrUsername: emailOrUsername,
-              password: password,
-            );
+        await repo.signInWithPassword(
+          emailOrUsername: emailOrUsername,
+          password: password,
+        );
       });
       switch (task) {
         case AsyncError(:final error, :final stackTrace):
@@ -36,7 +38,8 @@ class AuthNotifier extends AutoDisposeStreamNotifier<User?> {
 
   Future<void> signOut() async {
     if (state case AsyncData(value: != null)) {
-      await ref.read($authRepository).signOut();
+      final repo = await ref.watch($authRepository.future);
+      await repo.signOut();
     }
   }
 }

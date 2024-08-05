@@ -1,6 +1,8 @@
+import 'package:animations/animations.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:simplist_app/common/routing/guards/auth_guard.dart';
+import 'package:simplist_app/common/routing/guards/auth_guards.dart';
 import 'package:simplist_app/common/routing/router.gr.dart';
 
 final $router = Provider(AppRouter.new);
@@ -13,14 +15,43 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(
+        CustomRoute<void>(
           path: '/',
           page: HomeRoute.page,
-          guards: [AuthGuard(ref)],
+          durationInMilliseconds: Durations.long4.inMilliseconds,
+          transitionsBuilder: _fadethroughTransitionBuilder,
+          guards: [AuthenticatedGuard(ref)],
         ),
-        AutoRoute(
+        CustomRoute<void>(
           path: '/welcome',
-          page: AuthRoute.page,
+          page: const EmptyShellRoute('welcome').page,
+          durationInMilliseconds: Durations.long4.inMilliseconds,
+          transitionsBuilder: _fadethroughTransitionBuilder,
+          children: [
+            AutoRoute(
+              fullscreenDialog: true,
+              path: '',
+              page: WelcomeRoute.page,
+            ),
+            AutoRoute(
+              fullscreenDialog: true,
+              path: 'auth',
+              page: SignInRoute.page,
+            ),
+          ],
         ),
       ];
 }
+
+RouteTransitionsBuilder _fadethroughTransitionBuilder =
+    (context, animation, secondaryAnimation, child) => FadeThroughTransition(
+          animation: CurvedAnimation(
+            curve: Curves.easeInOutCubicEmphasized,
+            parent: animation,
+          ),
+          secondaryAnimation: CurvedAnimation(
+            curve: Curves.easeInOutCubicEmphasized,
+            parent: secondaryAnimation,
+          ),
+          child: child,
+        );
