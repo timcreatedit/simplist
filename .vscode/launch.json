@@ -2,11 +2,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Flutter",
+            "name": "simplist",
             "type": "dart",
             "request": "launch",
             "cwd": "apps/simplist_app",
             "program": "lib/main.dart"
+        },
+        {
+            "name": "simplist (profile)",
+            "type": "dart",
+            "request": "launch",
+            "cwd": "apps/simplist_app",
+            "program": "lib/main.dart",
+            "flutterMode": "profile",
         }
     ],
     "compounds": []

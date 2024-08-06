@@ -1,18 +1,30 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:simplist_app/common/view/debounce_provider.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
 import 'package:simplist_app/tasks/domain/tasks_repository.dart';
 
-final $task = AsyncNotifierProvider.autoDispose
+final $expandedTaskId = StateProvider.autoDispose<String?>((ref) => null);
+
+final $task = StreamNotifierProvider.autoDispose
     .family<TaskNotifier, Task?, String?>(TaskNotifier.new);
 
-class TaskNotifier extends AutoDisposeFamilyAsyncNotifier<Task?, String?> {
+class TaskNotifier extends AutoDisposeFamilyStreamNotifier<Task?, String?> {
   @override
-  FutureOr<Task?> build(String? arg) async {
-    if (arg == null) return null;
+  Stream<Task?> build(String? arg) async* {
+    if (arg == null) {
+      yield null;
+      return;
+    }
+
+    ref.listen($onDebounceFlush, (_, __) => _flush());
+
     final repo = await ref.watch($taskRepository.future);
-    return repo.get(arg);
+    await for (final e in repo.watch(arg)) {
+      yield e;
+    }
   }
 
   Future<void> create({
@@ -31,16 +43,34 @@ class TaskNotifier extends AutoDisposeFamilyAsyncNotifier<Task?, String?> {
 
   Future<void> save({
     required String title,
-    required bool today,
+    required ScheduleType scheduled,
+    required bool completed,
   }) async {
     if (state case AsyncData(:final value?)) {
       final repo = await ref.watch($taskRepository.future);
       await repo.update(
         value.copyWith(
           title: title,
-          scheduled: today ? ScheduleType.today : ScheduleType.none,
+          scheduled: scheduled,
+          completedOn: completed ? value.completedOn ?? clock.now() : null,
         ),
       );
+      ref.invalidateSelf();
     }
+  }
+
+  Future<void> setComplete({bool completed = true}) async {
+    if (state case AsyncData(value: final task?)) {
+      state =
+          AsyncData(task.copyWith(completedOn: completed ? clock.now() : null));
+      ref.read($debounce.notifier).bump();
+    }
+  }
+
+  Future<void> _flush() async {
+    final task = await future;
+    if (task == null) return;
+    final repo = await ref.watch($taskRepository.future);
+    await repo.update(task);
   }
 }

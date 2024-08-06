@@ -26,12 +26,6 @@ class AppRouter extends RootStackRouter {
               page: HomeRoute.page,
               transitionsBuilder: _fadethroughTransitionBuilder,
             ),
-            CustomRoute<void>(
-              path: 'add',
-              page: AddTaskRoute.page,
-              opaque: false,
-              transitionsBuilder: _fadethroughTransitionBuilder,
-            ),
           ],
         ),
         CustomRoute<void>(

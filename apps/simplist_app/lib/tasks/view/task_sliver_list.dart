@@ -6,6 +6,7 @@ import 'package:simplist_app/common/view/spacing.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/view/tasks_providers.dart';
 import 'package:simplist_app/tasks/view/widgets/task_list_tile.dart';
+import 'package:simplist_app/tasks/view/widgets/unselected_dimmer.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class TaskSliverList extends HookConsumerWidget {
@@ -21,15 +22,15 @@ class TaskSliverList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasks = ref.watch($tasks(filter));
-    final notifier = ref.watch($tasks(filter).notifier);
     return switch (tasks) {
       AsyncData(value: final tasks) => MultiSliver(
+          pushPinnedChildren: true,
           children: [
-            SliverAnimatedSizeSwitcher(
-              child: SliverPinnedHeader(
-                child: switch ((header, tasks)) {
-                  (null, _) || (_, []) => const SizedBox.shrink(),
-                  (final title?, [...]) => Container(
+            SliverPinnedHeader(
+              child: switch ((header, tasks)) {
+                (null, _) || (_, []) => const SizedBox.shrink(),
+                (final title?, [...]) => UnselectedDimmer(
+                    child: Container(
                       color: context.colorScheme.surface,
                       padding: const EdgeInsets.symmetric(
                         horizontal: Spacers.m,
@@ -42,8 +43,8 @@ class TaskSliverList extends HookConsumerWidget {
                         ],
                       ),
                     ),
-                },
-              ),
+                  ),
+              },
             ),
             SliverImplicitlyAnimatedList(
               items: tasks,
@@ -60,13 +61,12 @@ class TaskSliverList extends HookConsumerWidget {
                     opacity: anim,
                     child: TaskListTile(
                       key: ValueKey(item.id),
-                      task: item,
-                      notifier: notifier,
+                      id: item.id,
                     ),
                   ),
                 );
               },
-            )
+            ),
           ],
         ),
       _ => const SliverToBoxAdapter()

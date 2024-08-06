@@ -57,4 +57,29 @@ extension CollectionWatchExtension on RecordService {
       watchEvents('*').asyncMap((_) => get()),
     ]);
   }
+
+  /// The watching equivalent of [getOne].
+  ///
+  /// Always emits the current element first and subscribes to updates.
+  Stream<RecordModel> watchOne(
+    String id, {
+    String? expand,
+    String? fields,
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    Future<RecordModel> get() {
+      return getOne(
+        id,
+        expand: expand,
+        fields: fields,
+        query: query,
+        headers: headers,
+      );
+    }
+
+    return Stream.fromFuture(get()).concatWith([
+      watchEvents(id).asyncMap((_) => get()),
+    ]);
+  }
 }

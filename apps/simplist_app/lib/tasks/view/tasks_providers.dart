@@ -24,7 +24,7 @@ class Tasks extends AutoDisposeFamilyStreamNotifier<List<Task>, TaskFilter> {
       (previous, next) => _updateAll(),
     );
 
-    await for (final e in repo.watchCompleted(filter: arg)) {
+    await for (final e in repo.watchAll(filter: arg)) {
       // Ignore updates while debouncing
       if (ref.read($debounce) == false) yield e;
     }

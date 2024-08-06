@@ -30,12 +30,7 @@ interface class TasksRepository {
 
   final _sorting = "completedOn,-scheduled";
 
-  Stream<List<Task>> watchAll() =>
-      _collection.watchFullList(sort: _sorting).map((l) {
-        return [for (final record in l) Task.fromJson(record.toJson())];
-      });
-
-  Stream<List<Task>> watchCompleted({
+  Stream<List<Task>> watchAll({
     TaskFilter filter = TaskFilter.none,
   }) =>
       _collection
@@ -62,6 +57,13 @@ interface class TasksRepository {
     } catch (_) {
       return null;
     }
+  }
+
+  Stream<Task?> watch(String id) {
+    return _collection
+        .watchOne(id)
+        .map((r) => Task.fromJson(r.toJson()))
+        .handleError((_) => Stream.value(null));
   }
 
   Future<Task> create({
