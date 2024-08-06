@@ -6,7 +6,7 @@ import 'package:simplist_app/common/view/debounce_provider.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
 import 'package:simplist_app/tasks/domain/tasks_repository.dart';
 
-final $expandedTaskId = StateProvider.autoDispose<String?>((ref) => null);
+final $selectedTaskId = StateProvider.autoDispose<String?>((ref) => null);
 
 final $task = StreamNotifierProvider.autoDispose
     .family<TaskNotifier, Task?, String?>(TaskNotifier.new);
@@ -72,5 +72,6 @@ class TaskNotifier extends AutoDisposeFamilyStreamNotifier<Task?, String?> {
     if (task == null) return;
     final repo = await ref.watch($taskRepository.future);
     await repo.update(task);
+    ref.invalidateSelf();
   }
 }

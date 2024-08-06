@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:implicitly_animated_reorderable_list_2/implicitly_animated_reorderable_list_2.dart';
 import 'package:simplist_app/common/view/extensions/context_convenience.dart';
@@ -13,15 +14,21 @@ class TaskSliverList extends HookConsumerWidget {
   const TaskSliverList({
     this.header,
     this.filter = TaskFilter.none,
+    this.maxCount,
     super.key,
   });
 
   final Widget? header;
   final TaskFilter filter;
 
+  final int? maxCount;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasks = ref.watch($tasks(filter));
+
+    final expanded = useState(maxCount == null);
+
     return switch (tasks) {
       AsyncData(value: final tasks) => MultiSliver(
           pushPinnedChildren: true,
@@ -47,7 +54,10 @@ class TaskSliverList extends HookConsumerWidget {
               },
             ),
             SliverImplicitlyAnimatedList(
-              items: tasks,
+              items: switch (maxCount == null || expanded.value) {
+                true => tasks,
+                false => tasks.sublist(0, maxCount),
+              },
               areItemsTheSame: (a, b) => a.id == b.id,
               itemBuilder: (context, animation, item, i) {
                 final anim = CurvedAnimation(
@@ -67,6 +77,19 @@ class TaskSliverList extends HookConsumerWidget {
                 );
               },
             ),
+            if (maxCount != null && tasks.length > maxCount!)
+              TextButton(
+                onPressed: () => expanded.value = !expanded.value,
+                child: AnimatedSwitcher(
+                  duration: Durations.short4,
+                  child: Text(
+                    key: ValueKey(expanded.value),
+                    expanded.value
+                        ? "Hide"
+                        : "Show ${tasks.length - maxCount!} more",
+                  ),
+                ),
+              ),
           ],
         ),
       _ => const SliverToBoxAdapter()

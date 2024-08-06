@@ -20,7 +20,7 @@ class AuthenticatedGuard extends AutoRouteGuard {
         .catchError((_) => null);
     switch (user) {
       case null:
-        router.replace(const WelcomeRoute()).ignore();
+        router.replaceAll([const WelcomeWrapperRoute()]).ignore();
       case User():
         resolver.next();
     }
@@ -45,7 +45,7 @@ class UnauthenticatedGuard extends AutoRouteGuard {
       case null:
         resolver.next();
       case User():
-        router.replaceAll([const HomeRoute()]).ignore();
+        router.replaceAll([const AppRoute()]).ignore();
     }
   }
 }

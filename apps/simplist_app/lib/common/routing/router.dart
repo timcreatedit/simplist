@@ -16,7 +16,7 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
         CustomRoute<void>(
           path: '/',
-          page: const EmptyShellHeroRoute('/').page,
+          page: AppRoute.page,
           durationInMilliseconds: Durations.long4.inMilliseconds,
           transitionsBuilder: _fadethroughTransitionBuilder,
           guards: [AuthenticatedGuard(ref)],
@@ -30,7 +30,7 @@ class AppRouter extends RootStackRouter {
         ),
         CustomRoute<void>(
           path: '/welcome',
-          page: const EmptyShellHeroRoute('welcome').page,
+          page: WelcomeWrapperRoute.page,
           durationInMilliseconds: Durations.long4.inMilliseconds,
           transitionsBuilder: _fadethroughTransitionBuilder,
           children: [
@@ -57,28 +57,3 @@ RouteTransitionsBuilder _fadethroughTransitionBuilder =
           ),
           child: child,
         );
-
-/// A proxy Route page that provides a way to create a [PageRouteInfo]
-/// without the need for creating a new Page Widget
-class EmptyShellHeroRoute extends PageInfo {
-  /// Default constructor
-  const EmptyShellHeroRoute(super.name)
-      : super(
-          builder: _emptyShellHeroBuilder,
-        );
-
-  /// Creates a new instance with of [PageRouteInfo]
-  PageRouteInfo call({List<PageRouteInfo>? children}) {
-    return PageRouteInfo(name, initialChildren: children);
-  }
-
-  /// Creates a new instance with of [PageInfo] with an empty shell builder
-  /// that returns an [AutoRouter] widget
-  PageInfo get page => this;
-
-  static Widget _emptyShellHeroBuilder(RouteData _) {
-    return AutoRouter(
-      navigatorObservers: () => [HeroController()],
-    );
-  }
-}

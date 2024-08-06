@@ -18,7 +18,7 @@ class MainApp extends HookConsumerWidget {
     ref.listen($auth, (prev, next) {
       if (prev case AsyncValue(value: != null)) {
         if (next case AsyncData(value: == null)) {
-          ref.read($router).replaceAll([const WelcomeRoute()]);
+          ref.read($router).navigate(const WelcomeRoute());
         }
       }
     });

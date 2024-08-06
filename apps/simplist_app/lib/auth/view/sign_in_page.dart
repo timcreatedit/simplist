@@ -13,7 +13,7 @@ class SignInPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen($auth, (prev, next) {
       if (next case AsyncData(value: != null)) {
-        context.router.replaceAll([const HomeRoute()]);
+        context.router.replaceAll([const AppRoute()]);
       }
     });
 

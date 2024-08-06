@@ -6,6 +6,7 @@ import 'package:simplist_app/common/view/spacing.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/view/task_notifier.dart';
 import 'package:simplist_app/tasks/view/task_sliver_list.dart';
+import 'package:simplist_app/tasks/view/widgets/unselected_dimmer.dart';
 
 @RoutePage()
 class HomePage extends HookConsumerWidget {
@@ -13,7 +14,7 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      floatingActionButton: switch (ref.watch($expandedTaskId)) {
+      floatingActionButton: switch (ref.watch($selectedTaskId)) {
         == null => FloatingActionButton(
             heroTag: "add_task",
             onPressed: () {},
@@ -24,7 +25,8 @@ class HomePage extends HookConsumerWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar.large(
-            title: const Text('Home'),
+            title: const UnselectedDimmer(child: Text('Home')),
+            pinned: false,
             actions: [
               IconButton(
                 onPressed: () => ref.read($auth.notifier).signOut(),
@@ -43,6 +45,7 @@ class HomePage extends HookConsumerWidget {
           const TaskSliverList(
             header: Text("Logbook"),
             filter: TaskFilter.completedToday,
+            maxCount: 1,
           ),
           const SliverToBoxAdapter(
             child: VSpace.x4l(),

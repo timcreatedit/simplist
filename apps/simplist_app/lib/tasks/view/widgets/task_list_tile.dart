@@ -23,7 +23,7 @@ class TaskListTile extends HookConsumerWidget {
     final state = ref.watch($task(id));
     final notifier = ref.watch($task(id).notifier);
 
-    final isSelected = ref.watch($expandedTaskId.select((id) => id == this.id));
+    final isSelected = ref.watch($selectedTaskId.select((id) => id == this.id));
     return AnimatedSize(
       duration: Durations.short4,
       curve: Easing.standard,
@@ -36,7 +36,7 @@ class TaskListTile extends HookConsumerWidget {
                 exceptForId: id,
                 child: Material(
                   child: ListTile(
-                    onTap: () => ref.read($expandedTaskId.notifier).state = id,
+                    onTap: () => ref.read($selectedTaskId.notifier).state = id,
                     leading: AnimatedSwitcher(
                       duration: Durations.short4,
                       child: switch (task.scheduled) {
@@ -64,7 +64,7 @@ class TaskListTile extends HookConsumerWidget {
               ),
             ),
           (AsyncData(value: != null), true) => TaskEditTile(id: id),
-          _ => const SizedBox.shrink(),
+          _ => const HSpace.expand(),
         },
       ),
     );
@@ -89,8 +89,21 @@ class TaskEditTile extends HookConsumerWidget {
         useState(state.valueOrNull?.scheduled ?? ScheduleType.none);
     final controller = useTextEditingController(text: title, keys: [title]);
 
+    useEffect(
+      () {
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => Scrollable.ensureVisible(
+            context,
+            alignment: .5,
+          ),
+        );
+        return null;
+      },
+      [],
+    );
+
     // Save when closed
-    ref.listen($expandedTaskId.select((id) => id == this.id), (prev, next) {
+    ref.listen($selectedTaskId.select((id) => id == this.id), (prev, next) {
       if (next == false) {
         notifier.save(
           title: controller.text,
@@ -113,6 +126,9 @@ class TaskEditTile extends HookConsumerWidget {
                   child: CupertinoTextField.borderless(
                     controller: controller,
                     autofocus: Platform.isMacOS,
+                    style: context.textTheme.bodyMedium,
+                    onSubmitted: (_) =>
+                        ref.read($selectedTaskId.notifier).state = null,
                   ),
                 ),
                 const HSpace.s(),

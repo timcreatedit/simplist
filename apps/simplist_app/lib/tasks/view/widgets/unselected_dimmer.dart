@@ -19,7 +19,7 @@ class UnselectedDimmer extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dim = ref.watch(
-      $expandedTaskId.select((id) => id != null && id != exceptForId),
+      $selectedTaskId.select((id) => id != null && id != exceptForId),
     );
 
     final filterColor =
@@ -32,7 +32,10 @@ class UnselectedDimmer extends HookConsumerWidget {
           builder: (context, value, child) => ColorFiltered(
             colorFilter: ColorFilter.mode(
               value!,
-              BlendMode.lighten,
+              switch (context.theme.brightness) {
+                Brightness.dark => BlendMode.darken,
+                Brightness.light => BlendMode.lighten,
+              },
             ),
             child: child,
           ),
@@ -47,7 +50,7 @@ class UnselectedDimmer extends HookConsumerWidget {
               child: ModalBarrier(
                   semanticsLabel: "Close task",
                   onDismiss: () =>
-                      ref.read($expandedTaskId.notifier).state = null),
+                      ref.read($selectedTaskId.notifier).state = null),
             ),
           ),
       ],
