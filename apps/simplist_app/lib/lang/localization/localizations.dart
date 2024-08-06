@@ -138,6 +138,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Logbook'**
   String get logbook;
+
+  /// No description provided for @newTask.
+  ///
+  /// In en, this message translates to:
+  /// **'New Task'**
+  String get newTask;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

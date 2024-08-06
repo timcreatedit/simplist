@@ -7,5 +7,6 @@
     "signInAction": "Sign In",
     "inbox": "Inbox",
     "today": "Today",
-    "logbook": "Logbook"
+    "logbook": "Logbook",
+    "newTask": "New Task"
 }

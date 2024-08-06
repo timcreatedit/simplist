@@ -4,7 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simplist_app/common/routing/router.gr.dart';
+import 'package:simplist_app/common/view/extensions/context_convenience.dart';
+import 'package:simplist_app/common/view/extensions/task_filter_view.dart';
 import 'package:simplist_app/common/view/spacing.dart';
+import 'package:simplist_app/common/view/widgets/draggable_action.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 
 class DraggableTaskCard extends HookConsumerWidget {
@@ -19,72 +22,25 @@ class DraggableTaskCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final startOffset = useState<Offset?>(null);
-    final current = useState<Offset>(Offset.zero);
-    final targetOffset = current.value - (startOffset.value ?? Offset.zero);
-
-    const minDistance = 200;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned.fill(
-          child: TweenAnimationBuilder<Offset>(
-            tween: Tween(
-              begin: targetOffset,
-              end: targetOffset,
-            ),
-            duration:
-                startOffset.value != null ? Duration.zero : Durations.long4,
-            curve: Easing.emphasizedDecelerate,
-            builder: (context, value, child) {
-              return Transform.translate(
-                offset: value,
-                child: OverflowBox(
-                  maxWidth: double.infinity,
-                  maxHeight: double.infinity,
-                  child: Hero(
-                    tag: taskFilter,
-                    child: _NewTaskPreview(
-                      distanceProgress: targetOffset.distance / minDistance,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        GestureDetector(
-          onVerticalDragStart: (details) {
-            startOffset.value = details.localPosition;
-            current.value = details.localPosition;
-          },
-          onVerticalDragUpdate: (details) =>
-              current.value = details.localPosition,
-          onVerticalDragEnd: (_) async {
-            if (targetOffset.distance > minDistance) {
-              await context.router.navigate(AddTaskRoute(toFilter: taskFilter));
-            }
-            startOffset.value = null;
-            current.value = Offset.zero;
-          },
-          onVerticalDragCancel: () {
-            current.value = Offset.zero;
-            startOffset.value = null;
-          },
-          child: child,
-        ),
-      ],
+    return DraggableAction(
+      child: child,
+      onActivate: () =>
+          context.router.navigate(AddTaskRoute(toFilter: taskFilter)),
+      previewBuilder: (context, progress) => _NewTaskPreview(
+        taskFilter: taskFilter,
+        distanceProgress: progress,
+      ),
     );
   }
 }
 
 class _NewTaskPreview extends HookConsumerWidget {
   const _NewTaskPreview({
+    required this.taskFilter,
     required this.distanceProgress,
     super.key,
   });
-
+  final TaskFilter taskFilter;
   final double distanceProgress;
 
   @override
@@ -100,20 +56,17 @@ class _NewTaskPreview extends HookConsumerWidget {
       [haptic],
     );
 
-    return AnimatedOpacity(
-      duration: duration,
-      opacity: switch (distanceProgress) {
-        < .5 => 0,
-        < 1.0 => .5,
-        _ => 1.0,
-      },
+    return Hero(
+      tag: taskFilter,
       child: Card(
-        shape: const StadiumBorder(),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Spacers.l),
+        ),
         child: AnimatedContainer(
           duration: Durations.long4,
           curve: Easing.emphasizedDecelerate,
           width: switch (distanceProgress) {
-            < 1 => 100,
+            < 1 => 150,
             _ => screenWidth - Spacers.l * 2,
           },
           padding: switch (distanceProgress) {
@@ -126,12 +79,24 @@ class _NewTaskPreview extends HookConsumerWidget {
                 children: [
                   Expanded(
                     child: AnimatedAlign(
+                      heightFactor: 1,
                       duration: duration,
                       curve: Easing.emphasizedDecelerate,
                       alignment: distanceProgress > 1.0
                           ? Alignment.centerLeft
                           : Alignment.center,
-                      child: Text("New Task"),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            taskFilter.icon,
+                            color:
+                                context.colorScheme.onSurface.withOpacity(0.5),
+                          ),
+                          const HSpace.xxs(),
+                          Text(context.l10n.newTask),
+                        ],
+                      ),
                     ),
                   ),
                   AnimatedSize(

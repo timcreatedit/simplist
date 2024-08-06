@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:rivership/rivership.dart';
 import 'package:simplist_app/common/view/spacing.dart';
 import 'package:simplist_app/home/view/home_providers.dart';
 import 'package:simplist_app/home/view/widgets/home_navigation_bar.dart';
@@ -21,13 +20,9 @@ class ListsPageView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pageController = usePageController();
-
-    ref.listen($currentList, (prev, next) {
-      if ((prev?.isLoadingInitial ?? false) && next.hasValue) {
-        pageController.jumpToPage(pages.indexOf(next.requireValue));
-      }
-    });
+    final pageController = usePageController(
+      initialPage: 1,
+    );
 
     return Stack(
       children: [
