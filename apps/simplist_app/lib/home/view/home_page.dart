@@ -45,7 +45,8 @@ class HomePage extends HookConsumerWidget {
             ),
           ),
         ],
-        body: const ListsPageView(
+        body: ListsPageView(
+          overlapHandle: overlapHandle,
           pages: [
             TaskFilter.uncompletedAndNotToday,
             TaskFilter.uncompletedAndToday,

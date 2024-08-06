@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simplist_app/common/view/extensions/context_convenience.dart';
-import 'package:simplist_app/common/view/extensions/task_filter_view.dart';
+import 'package:simplist_app/common/view/extensions/task_filter_view_getters.dart';
 import 'package:simplist_app/common/view/spacing.dart';
 import 'package:simplist_app/home/view/home_providers.dart';
 

@@ -23,6 +23,7 @@ dependencies:
   freezed_annotation: ^2.4.4
   hooks_riverpod: ^2.5.1
   implicitly_animated_reorderable_list_2: ^0.6.0
+  intl: ^0.19.0
   pocketbase: ^0.18.1
   pocketbased: ^0.1.0
   riverpod: ^2.5.1

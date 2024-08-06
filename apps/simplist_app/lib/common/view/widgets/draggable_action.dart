@@ -30,10 +30,6 @@ class DraggableAction extends HookConsumerWidget {
     final current = useState<Offset>(Offset.zero);
     final targetOffset = current.value - (startOffset.value ?? Offset.zero);
 
-    final previewOpacity = previewBuilder == null
-        ? 0.0
-        : (targetOffset.distance / previewDistance).clamp(0.0, 1.0);
-
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -45,6 +41,9 @@ class DraggableAction extends HookConsumerWidget {
           duration: startOffset.value != null ? Duration.zero : Durations.long4,
           curve: Easing.emphasizedDecelerate,
           builder: (context, value, child) {
+            final previewOpacity = previewBuilder == null
+                ? 0.0
+                : (value.distance / previewDistance).clamp(0.0, 1.0);
             return Transform.translate(
               offset: value,
               child: AnimatedSwitcher(

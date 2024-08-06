@@ -1,13 +1,11 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:rivership/rivership.dart';
 import 'package:simplist_app/common/view/extensions/context_convenience.dart';
 import 'package:simplist_app/common/view/spacing.dart';
-import 'package:simplist_app/tasks/domain/task.dart';
 import 'package:simplist_app/tasks/view/task_notifier.dart';
+import 'package:simplist_app/tasks/view/widgets/task_edit_card.dart';
 import 'package:simplist_app/tasks/view/widgets/unselected_dimmer.dart';
 
 class TaskListTile extends HookConsumerWidget {
@@ -22,6 +20,7 @@ class TaskListTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch($task(id));
     final notifier = ref.watch($task(id).notifier);
+    final completionFormat = useDateFormat(format: DateFormat.NUM_MONTH_DAY);
 
     final isSelected = ref.watch($selectedTaskId.select((id) => id == this.id));
     return AnimatedSize(
@@ -37,7 +36,9 @@ class TaskListTile extends HookConsumerWidget {
                 child: Material(
                   child: ListTile(
                     iconColor: context.colorScheme.tertiary,
-                    onTap: () => ref.read($selectedTaskId.notifier).state = id,
+                    onTap: task.completed
+                        ? null
+                        : () => ref.read($selectedTaskId.notifier).state = id,
                     title: AnimatedDefaultTextStyle(
                       duration: Durations.short4,
                       style: context.textTheme.bodyMedium!.copyWith(
@@ -47,11 +48,18 @@ class TaskListTile extends HookConsumerWidget {
                       ),
                       child: Text(task.title),
                     ),
-                    trailing: Checkbox(
-                      value: task.completed,
-                      onChanged: (value) => notifier.setComplete(
-                        completed: value!,
-                      ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (task.completedOn case final date?)
+                          Text(completionFormat.format(date)),
+                        Checkbox(
+                          value: task.completed,
+                          onChanged: (value) => notifier.setComplete(
+                            completed: value!,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -75,62 +83,16 @@ class TaskEditTile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch($task(id));
-    final notifier = ref.watch($task(id).notifier);
-    final title = state.valueOrNull?.title;
-    final completed = useState(state.valueOrNull?.completed ?? false);
-    final scheduled =
-        useState(state.valueOrNull?.scheduled ?? ScheduleType.none);
-    final controller = useTextEditingController(text: title, keys: [title]);
-
-    // Save when closed
-    ref.listen($selectedTaskId.select((id) => id == this.id), (prev, next) {
-      if (next == false) {
-        notifier.save(
-          title: controller.text,
-          scheduled: scheduled.value,
-          completed: completed.value,
-        );
-      }
-    });
-
-    return Card(
-      margin: const EdgeInsets.all(Spacers.m),
-      child: Padding(
-        padding: const EdgeInsets.all(Spacers.m),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: CupertinoTextField.borderless(
-                    controller: controller,
-                    autofocus: Platform.isMacOS,
-                    style: context.textTheme.bodyMedium,
-                    onSubmitted: (_) =>
-                        ref.read($selectedTaskId.notifier).state = null,
-                  ),
-                ),
-                const HSpace.s(),
-                Checkbox(
-                  value: completed.value,
-                  onChanged: (value) => completed.value = value!,
-                ),
-              ],
-            ),
-            const VSpace.s(),
-            SegmentedButton<ScheduleType>(
-              segments: [
-                ButtonSegment(value: ScheduleType.none, label: Text("Anytime")),
-                ButtonSegment(value: ScheduleType.today, label: Text("Today")),
-              ],
-              selected: {scheduled.value},
-              onSelectionChanged: (value) => scheduled.value = value.single,
-            ),
-          ],
-        ),
-      ),
+    return TaskEditCard.existing(
+      id: id,
+      onSave: (title, completed, scheduled) {
+        ref.read($task(id).notifier).save(
+              title: title,
+              completed: completed,
+              scheduled: scheduled,
+            );
+        ref.read($selectedTaskId.notifier).state = null;
+      },
     );
   }
 }

@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simplist_app/common/routing/router.gr.dart';
+import 'package:simplist_app/common/routing/transition_builders.dart';
 import 'package:simplist_app/common/view/extensions/context_convenience.dart';
-import 'package:simplist_app/common/view/extensions/task_filter_view.dart';
+import 'package:simplist_app/common/view/extensions/task_filter_view_getters.dart';
 import 'package:simplist_app/common/view/spacing.dart';
 import 'package:simplist_app/common/view/widgets/draggable_action.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
+import 'package:simplist_app/tasks/view/task_notifier.dart';
 
 class DraggableTaskCard extends HookConsumerWidget {
   const DraggableTaskCard({
@@ -24,8 +26,10 @@ class DraggableTaskCard extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return DraggableAction(
       child: child,
-      onActivate: () =>
-          context.router.navigate(AddTaskRoute(toFilter: taskFilter)),
+      onActivate: () async {
+        ref.read($selectedTaskId.notifier).state = null;
+        await context.router.push(AddTaskRoute(toFilter: taskFilter));
+      },
       previewBuilder: (context, progress) => _NewTaskPreview(
         taskFilter: taskFilter,
         distanceProgress: progress,
@@ -38,7 +42,6 @@ class _NewTaskPreview extends HookConsumerWidget {
   const _NewTaskPreview({
     required this.taskFilter,
     required this.distanceProgress,
-    super.key,
   });
   final TaskFilter taskFilter;
   final double distanceProgress;
@@ -57,11 +60,9 @@ class _NewTaskPreview extends HookConsumerWidget {
     );
 
     return Hero(
+      flightShuttleBuilder: fadeShuttle,
       tag: taskFilter,
       child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Spacers.l),
-        ),
         child: AnimatedContainer(
           duration: Durations.long4,
           curve: Easing.emphasizedDecelerate,

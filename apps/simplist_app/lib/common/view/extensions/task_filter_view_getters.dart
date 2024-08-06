@@ -14,6 +14,6 @@ extension TaskFilterViewGetters on TaskFilter {
         TaskFilter.uncompletedAndToday => l10n.today,
         TaskFilter.uncompletedAndNotToday => l10n.inbox,
         TaskFilter.completed => l10n.logbook,
-        _ => l10n.appName,
+        _ => l10n.logbook,
       };
 }
