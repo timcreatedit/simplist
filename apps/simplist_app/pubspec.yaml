@@ -11,7 +11,9 @@ dependencies:
   animations: ^2.0.11
   auto_route: ^9.1.0
   clock: ^1.1.1
+  collection: ^1.18.0
   flex_seed_scheme: ^3.1.2
+  fluid_animations: ^1.0.0
   flutter:
     sdk: flutter
   flutter_hooks: ^0.20.5

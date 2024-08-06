@@ -120,6 +120,24 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Sign In'**
   String get signInAction;
+
+  /// No description provided for @inbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Inbox'**
+  String get inbox;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @logbook.
+  ///
+  /// In en, this message translates to:
+  /// **'Logbook'**
+  String get logbook;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

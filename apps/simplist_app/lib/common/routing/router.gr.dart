@@ -8,17 +8,66 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i6;
-import 'package:simplist_app/auth/view/sign_in_page.dart' as _i3;
-import 'package:simplist_app/auth/view/welcome_page.dart' as _i4;
-import 'package:simplist_app/auth/view/welcome_wrapper_page.dart' as _i5;
-import 'package:simplist_app/home/view/app_page.dart' as _i1;
-import 'package:simplist_app/home/view/home_page.dart' as _i2;
+import 'package:auto_route/auto_route.dart' as _i7;
+import 'package:flutter/material.dart' as _i8;
+import 'package:simplist_app/auth/view/sign_in_page.dart' as _i4;
+import 'package:simplist_app/auth/view/welcome_page.dart' as _i5;
+import 'package:simplist_app/auth/view/welcome_wrapper_page.dart' as _i6;
+import 'package:simplist_app/home/view/app_page.dart' as _i2;
+import 'package:simplist_app/home/view/home_page.dart' as _i3;
+import 'package:simplist_app/tasks/domain/task_filter.dart' as _i9;
+import 'package:simplist_app/tasks/view/add_task_page.dart' as _i1;
 
 /// generated route for
-/// [_i1.AppPage]
-class AppRoute extends _i6.PageRouteInfo<void> {
-  const AppRoute({List<_i6.PageRouteInfo>? children})
+/// [_i1.AddTaskPage]
+class AddTaskRoute extends _i7.PageRouteInfo<AddTaskRouteArgs> {
+  AddTaskRoute({
+    _i8.Key? key,
+    required _i9.TaskFilter toFilter,
+    List<_i7.PageRouteInfo>? children,
+  }) : super(
+          AddTaskRoute.name,
+          args: AddTaskRouteArgs(
+            key: key,
+            toFilter: toFilter,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'AddTaskRoute';
+
+  static _i7.PageInfo page = _i7.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<AddTaskRouteArgs>();
+      return _i1.AddTaskPage(
+        key: args.key,
+        toFilter: args.toFilter,
+      );
+    },
+  );
+}
+
+class AddTaskRouteArgs {
+  const AddTaskRouteArgs({
+    this.key,
+    required this.toFilter,
+  });
+
+  final _i8.Key? key;
+
+  final _i9.TaskFilter toFilter;
+
+  @override
+  String toString() {
+    return 'AddTaskRouteArgs{key: $key, toFilter: $toFilter}';
+  }
+}
+
+/// generated route for
+/// [_i2.AppPage]
+class AppRoute extends _i7.PageRouteInfo<void> {
+  const AppRoute({List<_i7.PageRouteInfo>? children})
       : super(
           AppRoute.name,
           initialChildren: children,
@@ -26,18 +75,18 @@ class AppRoute extends _i6.PageRouteInfo<void> {
 
   static const String name = 'AppRoute';
 
-  static _i6.PageInfo page = _i6.PageInfo(
+  static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      return const _i1.AppPage();
+      return const _i2.AppPage();
     },
   );
 }
 
 /// generated route for
-/// [_i2.HomePage]
-class HomeRoute extends _i6.PageRouteInfo<void> {
-  const HomeRoute({List<_i6.PageRouteInfo>? children})
+/// [_i3.HomePage]
+class HomeRoute extends _i7.PageRouteInfo<void> {
+  const HomeRoute({List<_i7.PageRouteInfo>? children})
       : super(
           HomeRoute.name,
           initialChildren: children,
@@ -45,18 +94,18 @@ class HomeRoute extends _i6.PageRouteInfo<void> {
 
   static const String name = 'HomeRoute';
 
-  static _i6.PageInfo page = _i6.PageInfo(
+  static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      return const _i2.HomePage();
+      return const _i3.HomePage();
     },
   );
 }
 
 /// generated route for
-/// [_i3.SignInPage]
-class SignInRoute extends _i6.PageRouteInfo<void> {
-  const SignInRoute({List<_i6.PageRouteInfo>? children})
+/// [_i4.SignInPage]
+class SignInRoute extends _i7.PageRouteInfo<void> {
+  const SignInRoute({List<_i7.PageRouteInfo>? children})
       : super(
           SignInRoute.name,
           initialChildren: children,
@@ -64,18 +113,18 @@ class SignInRoute extends _i6.PageRouteInfo<void> {
 
   static const String name = 'SignInRoute';
 
-  static _i6.PageInfo page = _i6.PageInfo(
+  static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      return const _i3.SignInPage();
+      return const _i4.SignInPage();
     },
   );
 }
 
 /// generated route for
-/// [_i4.WelcomePage]
-class WelcomeRoute extends _i6.PageRouteInfo<void> {
-  const WelcomeRoute({List<_i6.PageRouteInfo>? children})
+/// [_i5.WelcomePage]
+class WelcomeRoute extends _i7.PageRouteInfo<void> {
+  const WelcomeRoute({List<_i7.PageRouteInfo>? children})
       : super(
           WelcomeRoute.name,
           initialChildren: children,
@@ -83,18 +132,18 @@ class WelcomeRoute extends _i6.PageRouteInfo<void> {
 
   static const String name = 'WelcomeRoute';
 
-  static _i6.PageInfo page = _i6.PageInfo(
+  static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      return const _i4.WelcomePage();
+      return const _i5.WelcomePage();
     },
   );
 }
 
 /// generated route for
-/// [_i5.WelcomeWrapperPage]
-class WelcomeWrapperRoute extends _i6.PageRouteInfo<void> {
-  const WelcomeWrapperRoute({List<_i6.PageRouteInfo>? children})
+/// [_i6.WelcomeWrapperPage]
+class WelcomeWrapperRoute extends _i7.PageRouteInfo<void> {
+  const WelcomeWrapperRoute({List<_i7.PageRouteInfo>? children})
       : super(
           WelcomeWrapperRoute.name,
           initialChildren: children,
@@ -102,10 +151,10 @@ class WelcomeWrapperRoute extends _i6.PageRouteInfo<void> {
 
   static const String name = 'WelcomeWrapperRoute';
 
-  static _i6.PageInfo page = _i6.PageInfo(
+  static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      return const _i5.WelcomeWrapperPage();
+      return const _i6.WelcomeWrapperPage();
     },
   );
 }

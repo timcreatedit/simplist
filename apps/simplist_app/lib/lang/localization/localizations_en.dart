@@ -18,4 +18,13 @@ class L10nEn extends L10n {
 
   @override
   String get signInAction => 'Sign In';
+
+  @override
+  String get inbox => 'Inbox';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get logbook => 'Logbook';
 }

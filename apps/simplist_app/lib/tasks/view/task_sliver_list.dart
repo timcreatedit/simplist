@@ -78,15 +78,19 @@ class TaskSliverList extends HookConsumerWidget {
               },
             ),
             if (maxCount != null && tasks.length > maxCount!)
-              TextButton(
-                onPressed: () => expanded.value = !expanded.value,
-                child: AnimatedSwitcher(
-                  duration: Durations.short4,
-                  child: Text(
-                    key: ValueKey(expanded.value),
-                    expanded.value
-                        ? "Hide"
-                        : "Show ${tasks.length - maxCount!} more",
+              Center(
+                child: UnselectedDimmer(
+                  child: TextButton(
+                    onPressed: () => expanded.value = !expanded.value,
+                    child: AnimatedSwitcher(
+                      duration: Durations.short4,
+                      child: Text(
+                        key: ValueKey(expanded.value),
+                        expanded.value
+                            ? "Hide"
+                            : "Show ${tasks.length - maxCount!} more",
+                      ),
+                    ),
                   ),
                 ),
               ),

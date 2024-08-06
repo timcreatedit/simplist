@@ -21,9 +21,9 @@ class UnselectedDimmer extends HookConsumerWidget {
     final dim = ref.watch(
       $selectedTaskId.select((id) => id != null && id != exceptForId),
     );
-
+    final dimColor = context.colorScheme.surface;
     final filterColor =
-        dim ? context.colorScheme.surface.withOpacity(.6) : Colors.transparent;
+        dim ? dimColor.withOpacity(.6) : dimColor.withOpacity(0);
     return Stack(
       children: [
         TweenAnimationBuilder(

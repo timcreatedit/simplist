@@ -36,14 +36,8 @@ class TaskListTile extends HookConsumerWidget {
                 exceptForId: id,
                 child: Material(
                   child: ListTile(
+                    iconColor: context.colorScheme.tertiary,
                     onTap: () => ref.read($selectedTaskId.notifier).state = id,
-                    leading: AnimatedSwitcher(
-                      duration: Durations.short4,
-                      child: switch (task.scheduled) {
-                        ScheduleType.today => const Icon(Icons.star_rounded),
-                        _ => const SizedBox.square()
-                      },
-                    ),
                     title: AnimatedDefaultTextStyle(
                       duration: Durations.short4,
                       style: context.textTheme.bodyMedium!.copyWith(
@@ -88,19 +82,6 @@ class TaskEditTile extends HookConsumerWidget {
     final scheduled =
         useState(state.valueOrNull?.scheduled ?? ScheduleType.none);
     final controller = useTextEditingController(text: title, keys: [title]);
-
-    useEffect(
-      () {
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) => Scrollable.ensureVisible(
-            context,
-            alignment: .5,
-          ),
-        );
-        return null;
-      },
-      [],
-    );
 
     // Save when closed
     ref.listen($selectedTaskId.select((id) => id == this.id), (prev, next) {

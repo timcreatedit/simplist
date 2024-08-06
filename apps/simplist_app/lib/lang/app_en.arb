@@ -4,5 +4,8 @@
     "onboardingDisplay": "Make it simple, make it work.",
     "getStartedAction": "Get Started",
     "signInPrompt": "Have an Account?",
-    "signInAction": "Sign In"
+    "signInAction": "Sign In",
+    "inbox": "Inbox",
+    "today": "Today",
+    "logbook": "Logbook"
 }

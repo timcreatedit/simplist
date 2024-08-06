@@ -1,12 +1,19 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
+import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simplist_app/common/view/debounce_provider.dart';
+import 'package:simplist_app/home/view/home_providers.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
+import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/domain/tasks_repository.dart';
+import 'package:simplist_app/tasks/view/tasks_providers.dart';
 
-final $selectedTaskId = StateProvider.autoDispose<String?>((ref) => null);
+final $selectedTaskId = StateProvider.autoDispose<String?>((ref) {
+  ref.listen($currentList, (_, __) => ref.invalidateSelf());
+  return null;
+});
 
 final $task = StreamNotifierProvider.autoDispose
     .family<TaskNotifier, Task?, String?>(TaskNotifier.new);
@@ -19,8 +26,15 @@ class TaskNotifier extends AutoDisposeFamilyStreamNotifier<Task?, String?> {
       return;
     }
 
-    ref.listen($onDebounceFlush, (_, __) => _flush());
+    if (state.hasValue == false) {
+      if (ref.read($tasks(TaskFilter.none)) case AsyncData(:final value)) {
+        if (value.firstWhereOrNull((t) => t.id == arg) case final cache?) {
+          yield cache;
+        }
+      }
+    }
 
+    ref.listen($onDebounceFlush, (_, __) => _flush());
     final repo = await ref.watch($taskRepository.future);
     await for (final e in repo.watch(arg)) {
       yield e;
@@ -47,14 +61,14 @@ class TaskNotifier extends AutoDisposeFamilyStreamNotifier<Task?, String?> {
     required bool completed,
   }) async {
     if (state case AsyncData(:final value?)) {
-      final repo = await ref.watch($taskRepository.future);
-      await repo.update(
-        value.copyWith(
-          title: title,
-          scheduled: scheduled,
-          completedOn: completed ? value.completedOn ?? clock.now() : null,
-        ),
+      final newValue = value.copyWith(
+        title: title,
+        scheduled: scheduled,
+        completedOn: completed ? value.completedOn ?? clock.now() : null,
       );
+      state = AsyncData(newValue);
+      final repo = await ref.watch($taskRepository.future);
+      await repo.update(newValue);
       ref.invalidateSelf();
     }
   }
