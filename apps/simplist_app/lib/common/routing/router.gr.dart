@@ -9,27 +9,27 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i7;
-import 'package:flutter/material.dart' as _i8;
+import 'package:flutter/material.dart' as _i9;
 import 'package:simplist_app/auth/view/sign_in_page.dart' as _i4;
 import 'package:simplist_app/auth/view/welcome_page.dart' as _i5;
 import 'package:simplist_app/auth/view/welcome_wrapper_page.dart' as _i6;
 import 'package:simplist_app/home/view/app_page.dart' as _i2;
 import 'package:simplist_app/home/view/home_page.dart' as _i3;
-import 'package:simplist_app/tasks/domain/task_filter.dart' as _i9;
+import 'package:simplist_app/tasks/domain/task_filter.dart' as _i8;
 import 'package:simplist_app/tasks/view/add_task_page.dart' as _i1;
 
 /// generated route for
 /// [_i1.AddTaskPage]
 class AddTaskRoute extends _i7.PageRouteInfo<AddTaskRouteArgs> {
   AddTaskRoute({
-    _i8.Key? key,
-    required _i9.TaskFilter toFilter,
+    required _i8.TaskFilter toFilter,
+    _i9.Key? key,
     List<_i7.PageRouteInfo>? children,
   }) : super(
           AddTaskRoute.name,
           args: AddTaskRouteArgs(
-            key: key,
             toFilter: toFilter,
+            key: key,
           ),
           initialChildren: children,
         );
@@ -41,8 +41,8 @@ class AddTaskRoute extends _i7.PageRouteInfo<AddTaskRouteArgs> {
     builder: (data) {
       final args = data.argsAs<AddTaskRouteArgs>();
       return _i1.AddTaskPage(
-        key: args.key,
         toFilter: args.toFilter,
+        key: args.key,
       );
     },
   );
@@ -50,17 +50,17 @@ class AddTaskRoute extends _i7.PageRouteInfo<AddTaskRouteArgs> {
 
 class AddTaskRouteArgs {
   const AddTaskRouteArgs({
-    this.key,
     required this.toFilter,
+    this.key,
   });
 
-  final _i8.Key? key;
+  final _i8.TaskFilter toFilter;
 
-  final _i9.TaskFilter toFilter;
+  final _i9.Key? key;
 
   @override
   String toString() {
-    return 'AddTaskRouteArgs{key: $key, toFilter: $toFilter}';
+    return 'AddTaskRouteArgs{toFilter: $toFilter, key: $key}';
   }
 }
 

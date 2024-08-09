@@ -8,5 +8,6 @@
     "inbox": "Inbox",
     "today": "Today",
     "logbook": "Logbook",
+    "keepDraggingForTask": "Drag to add...",
     "newTask": "New Task"
 }

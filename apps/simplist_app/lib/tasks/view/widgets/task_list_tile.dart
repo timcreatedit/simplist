@@ -23,52 +23,57 @@ class TaskListTile extends HookConsumerWidget {
     final completionFormat = useDateFormat(format: DateFormat.NUM_MONTH_DAY);
 
     final isSelected = ref.watch($selectedTaskId.select((id) => id == this.id));
-    return AnimatedSize(
-      duration: Durations.short4,
-      curve: Easing.standard,
-      child: AnimatedSwitcher(
-        duration: Durations.short4,
-        child: switch ((state, isSelected)) {
-          (AsyncData(value: final task?), false) => Hero(
-              tag: task.id,
-              child: UnselectedDimmer(
-                exceptForId: id,
-                child: Material(
-                  child: ListTile(
-                    iconColor: context.colorScheme.tertiary,
-                    onTap: task.completed
-                        ? null
-                        : () => ref.read($selectedTaskId.notifier).state = id,
-                    title: AnimatedDefaultTextStyle(
-                      duration: Durations.short4,
-                      style: context.textTheme.bodyMedium!.copyWith(
-                        color: task.completed
-                            ? context.colorScheme.onSurface.withOpacity(.5)
-                            : context.colorScheme.onSurface,
+    return AnimatedSizeSwitcher(
+      clipBehavior: Clip.none,
+      immediateResize: true,
+      child: switch ((state, isSelected)) {
+        (AsyncData(value: final task?), false) => Hero(
+            tag: task.id,
+            key: const ValueKey(true),
+            child: UnselectedDimmer(
+              exceptForId: id,
+              child: Material(
+                child: ListTile(
+                  iconColor: context.colorScheme.tertiary,
+                  onTap: task.completed
+                      ? null
+                      : () => ref.read($selectedTaskId.notifier).state = id,
+                  title: AnimatedDefaultTextStyle(
+                    duration: Durations.short4,
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: task.completed
+                          ? context.colorScheme.onSurface.withOpacity(.5)
+                          : context.colorScheme.onSurface,
+                    ),
+                    child: Text(task.title),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AnimatedSizeSwitcher(
+                        child: switch (task.completedOn) {
+                          final date? => Text(completionFormat.format(date)),
+                          null => null
+                        },
                       ),
-                      child: Text(task.title),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (task.completedOn case final date?)
-                          Text(completionFormat.format(date)),
-                        Checkbox(
-                          value: task.completed,
-                          onChanged: (value) => notifier.setComplete(
-                            completed: value!,
-                          ),
+                      Checkbox(
+                        value: task.completed,
+                        onChanged: (value) => notifier.setComplete(
+                          completed: value!,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          (AsyncData(value: != null), true) => TaskEditTile(id: id),
-          _ => const HSpace.expand(),
-        },
-      ),
+          ),
+        (AsyncData(value: != null), true) => TaskEditTile(
+            key: const ValueKey(false),
+            id: id,
+          ),
+        _ => const HSpace.expand(),
+      },
     );
   }
 }

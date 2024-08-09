@@ -7,6 +7,8 @@ import 'package:intl/intl.dart' as intl;
 
 import 'localizations_en.dart';
 
+// ignore_for_file: type=lint
+
 /// Callers can lookup localized strings with an instance of L10n
 /// returned by `L10n.of(context)`.
 ///
@@ -138,6 +140,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Logbook'**
   String get logbook;
+
+  /// No description provided for @keepDraggingForTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to add...'**
+  String get keepDraggingForTask;
 
   /// No description provided for @newTask.
   ///

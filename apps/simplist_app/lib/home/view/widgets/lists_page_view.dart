@@ -54,7 +54,7 @@ class ListsPageView extends HookConsumerWidget {
             controller: pageController,
             pages: pages,
           ),
-        )
+        ),
       ],
     );
   }

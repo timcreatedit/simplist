@@ -29,6 +29,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute<void>(
               path: 'add',
               page: AddTaskRoute.page,
+              durationInMilliseconds: Durations.medium4.inMilliseconds,
               transitionsBuilder: _fadethroughTransitionBuilder,
               opaque: false,
             ),

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rivership/rivership.dart';
 import 'package:simplist_app/common/routing/router.gr.dart';
-import 'package:simplist_app/common/routing/transition_builders.dart';
 import 'package:simplist_app/common/view/extensions/context_convenience.dart';
 import 'package:simplist_app/common/view/extensions/task_filter_view_getters.dart';
 import 'package:simplist_app/common/view/spacing.dart';
@@ -25,15 +25,25 @@ class DraggableTaskCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DraggableAction(
-      child: child,
+      previewDistance: 50,
       onActivate: () async {
         ref.read($selectedTaskId.notifier).state = null;
-        await context.router.push(AddTaskRoute(toFilter: taskFilter));
+        return await context.router
+                .push<bool>(AddTaskRoute(toFilter: taskFilter)) ??
+            false;
       },
       previewBuilder: (context, progress) => _NewTaskPreview(
         taskFilter: taskFilter,
         distanceProgress: progress,
       ),
+      childWhenDragging: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: Material(
+          shape: const StadiumBorder(),
+          color: context.colorScheme.surfaceContainerHighest,
+        ),
+      ),
+      child: child,
     );
   }
 }
@@ -63,6 +73,7 @@ class _NewTaskPreview extends HookConsumerWidget {
       flightShuttleBuilder: fadeShuttle,
       tag: taskFilter,
       child: Card(
+        elevation: distanceProgress < 1 ? 0 : CardTheme.of(context).elevation,
         child: AnimatedContainer(
           duration: Durations.long4,
           curve: Easing.emphasizedDecelerate,
@@ -95,7 +106,13 @@ class _NewTaskPreview extends HookConsumerWidget {
                                 context.colorScheme.onSurface.withOpacity(0.5),
                           ),
                           const HSpace.xxs(),
-                          Text(context.l10n.newTask),
+                          Flexible(
+                            child: AnimatedText(
+                              distanceProgress < 1.0
+                                  ? context.l10n.keepDraggingForTask
+                                  : context.l10n.newTask,
+                            ),
+                          ),
                         ],
                       ),
                     ),

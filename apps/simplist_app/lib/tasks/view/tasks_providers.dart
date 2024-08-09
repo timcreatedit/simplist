@@ -22,12 +22,12 @@ class Tasks extends AutoDisposeFamilyStreamNotifier<List<Task>, TaskFilter> {
     }
   }
 
-  Future<void> create({
+  Future<Task> create({
     required String title,
     required ScheduleType scheduled,
   }) async {
     final repo = await ref.read($taskRepository.future);
-    await repo.create(
+    return repo.create(
       title: title,
       scheduled: scheduled,
     );

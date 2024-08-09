@@ -120,39 +120,36 @@ class _ListNavigationItem extends HookConsumerWidget {
       padding: expanded
           ? const EdgeInsets.symmetric(horizontal: Spacers.xs)
           : const EdgeInsets.symmetric(horizontal: Spacers.xxs),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                style: TextButton.styleFrom(
-                    backgroundColor: backgroundColor,
-                    foregroundColor: color,
-                    padding: const EdgeInsets.symmetric(horizontal: Spacers.l)),
-                tooltip: filter.translation(context.l10n),
-                onPressed: onPressed,
-                icon: ScaleTransition(
-                  scale: Tween<double>(begin: 1, end: 1.5).animate(
-                    CurvedAnimation(
-                      curve: Easing.standard,
-                      parent: bounceController,
-                    ),
-                  ),
-                  child: Icon(filter.icon),
+          IconButton(
+            style: TextButton.styleFrom(
+              backgroundColor: backgroundColor,
+              foregroundColor: color,
+              padding: const EdgeInsets.symmetric(horizontal: Spacers.l),
+            ),
+            tooltip: filter.translation(context.l10n),
+            onPressed: onPressed,
+            icon: ScaleTransition(
+              scale: Tween<double>(begin: 1, end: 1.5).animate(
+                CurvedAnimation(
+                  curve: Easing.standard,
+                  parent: bounceController,
                 ),
               ),
-              SizedOverflowBox(
-                size: Size.square(Spacers.s * expansion),
-                child: Opacity(
-                  opacity: expansion,
-                  child: Text(
-                    filter.translation(context.l10n),
-                    style: context.textTheme.labelMedium,
-                  ),
-                ),
+              child: Icon(filter.icon),
+            ),
+          ),
+          SizedOverflowBox(
+            size: Size.square(Spacers.s * expansion),
+            child: Opacity(
+              opacity: expansion,
+              child: Text(
+                filter.translation(context.l10n),
+                style: context.textTheme.labelMedium,
               ),
-            ],
+            ),
           ),
         ],
       ),

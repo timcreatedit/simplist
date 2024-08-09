@@ -15,18 +15,22 @@ class TaskEditCard extends HookConsumerWidget {
   const TaskEditCard.existing({
     required String this.id,
     required this.onSave,
+    this.showCheckbox = true,
     super.key,
   }) : taskFilter = null;
 
   const TaskEditCard.fromFilter({
     required TaskFilter this.taskFilter,
     required this.onSave,
+    this.showCheckbox = false,
     super.key,
   }) : id = null;
 
   final String? id;
 
   final TaskFilter? taskFilter;
+
+  final bool showCheckbox;
 
   final void Function(
     String title,
@@ -90,18 +94,20 @@ class TaskEditCard extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                  const HSpace.s(),
-                  Checkbox(
-                    value: completed.value,
-                    onChanged: (value) => completed.value = value!,
-                  ),
+                  if (showCheckbox) ...[
+                    const HSpace.s(),
+                    Checkbox(
+                      value: completed.value,
+                      onChanged: (value) => completed.value = value!,
+                    ),
+                  ],
                 ],
               ),
               const VSpace.s(),
               ScheduleToggle(
                 value: scheduled.value,
                 onValueChanged: (v) => scheduled.value = v,
-              )
+              ),
             ],
           ),
         ),

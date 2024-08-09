@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rivership/rivership.dart';
 
 class DraggableAction extends HookConsumerWidget {
   const DraggableAction({
@@ -13,6 +14,7 @@ class DraggableAction extends HookConsumerWidget {
     this.reboundDuration = Durations.long4,
     this.reboundCurve = Easing.emphasizedDecelerate,
     this.previewBuilder,
+    this.childWhenDragging,
     super.key,
   });
 
@@ -21,7 +23,8 @@ class DraggableAction extends HookConsumerWidget {
   final Widget Function(BuildContext context, double progress)? previewBuilder;
   final Duration reboundDuration;
   final Curve reboundCurve;
-  final FutureOr<void> Function() onActivate;
+  final FutureOr<bool> Function() onActivate;
+  final Widget? childWhenDragging;
   final Widget child;
 
   @override
@@ -30,49 +33,56 @@ class DraggableAction extends HookConsumerWidget {
     final current = useState<Offset>(Offset.zero);
     final targetOffset = current.value - (startOffset.value ?? Offset.zero);
 
+    final offset = useSpringAnimation(
+      spring: startOffset.value == null
+          ? SimpleSpring.bouncy
+          : SimpleSpring.instant,
+      value: targetOffset,
+    );
+
+    final previewVisible =
+        offset.distance > previewDistance && startOffset.value != null;
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        TweenAnimationBuilder<Offset>(
-          tween: Tween(
-            begin: targetOffset,
-            end: targetOffset,
+        if (childWhenDragging != null && offset.distance > 0.05)
+          Positioned.fill(
+            child: AnimatedOpacity(
+              opacity: targetOffset.distance > 0.05 ? 1 : 0,
+              duration: Durations.short4,
+              child: IgnorePointer(child: childWhenDragging),
+            ),
           ),
-          duration: startOffset.value != null ? Duration.zero : Durations.long4,
-          curve: Easing.emphasizedDecelerate,
-          builder: (context, value, child) {
-            final previewOpacity = previewBuilder == null
-                ? 0.0
-                : (value.distance / previewDistance).clamp(0.0, 1.0);
-            return Transform.translate(
-              offset: value,
-              child: AnimatedSwitcher(
-                duration: Durations.long1,
-                child: Stack(
-                  children: [
-                    Opacity(
-                      opacity: 1 - previewOpacity,
-                      child: this.child,
-                    ),
-                    if (previewBuilder != null && value.distance > 0)
-                      Positioned.fill(
-                        child: OverflowBox(
-                          maxHeight: double.infinity,
-                          maxWidth: double.infinity,
-                          child: Opacity(
-                            opacity: previewOpacity,
-                            child: previewBuilder!(
-                              context,
-                              value.distance / activateDistance,
-                            ),
+        Transform.translate(
+          offset: offset,
+          child: Stack(
+            children: [
+              Visibility.maintain(
+                visible: false,
+                child: child,
+              ),
+              Positioned.fill(
+                child: OverflowBox(
+                  maxWidth: double.infinity,
+                  maxHeight: double.infinity,
+                  child: AnimatedSizeSwitcher(
+                    clipBehavior: Clip.none,
+                    immediateResize: true,
+                    child: previewVisible && previewBuilder != null
+                        ? previewBuilder!(
+                            context,
+                            offset.distance / activateDistance,
+                          )
+                        : Center(
+                            key: const ValueKey(true),
+                            child: child,
                           ),
-                        ),
-                      ),
-                  ],
+                  ),
                 ),
               ),
-            );
-          },
+            ],
+          ),
         ),
         Positioned.fill(
           child: GestureDetector(

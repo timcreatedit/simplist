@@ -1,5 +1,7 @@
 import 'localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for English (`en`).
 class L10nEn extends L10n {
   L10nEn([String locale = 'en']) : super(locale);
@@ -27,6 +29,9 @@ class L10nEn extends L10n {
 
   @override
   String get logbook => 'Logbook';
+
+  @override
+  String get keepDraggingForTask => 'Drag to add...';
 
   @override
   String get newTask => 'New Task';
