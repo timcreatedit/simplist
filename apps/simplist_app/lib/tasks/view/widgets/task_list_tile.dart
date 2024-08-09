@@ -52,7 +52,10 @@ class TaskListTile extends HookConsumerWidget {
                     children: [
                       AnimatedSizeSwitcher(
                         child: switch (task.completedOn) {
-                          final date? => Text(completionFormat.format(date)),
+                          final date? => Text(
+                              key: const ValueKey(true),
+                              completionFormat.format(date),
+                            ),
                           null => null
                         },
                       ),

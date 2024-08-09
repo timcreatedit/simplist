@@ -5,24 +5,24 @@ enum TaskFilter {
   completed,
   completedToday,
   uncompleted,
-  uncompletedAndToday,
-  uncompletedAndNotToday;
+  inbox,
+  today;
 
   ScheduleType get scheduleType => switch (this) {
         TaskFilter.none ||
         TaskFilter.completed ||
         TaskFilter.uncompleted ||
         TaskFilter.completedToday ||
-        TaskFilter.uncompletedAndNotToday =>
-          ScheduleType.none,
-        TaskFilter.uncompletedAndToday => ScheduleType.today,
+        TaskFilter.today =>
+          ScheduleType.today,
+        TaskFilter.inbox => ScheduleType.none,
       };
 
   bool get canCreate => switch (this) {
         TaskFilter.none ||
         TaskFilter.uncompleted ||
-        TaskFilter.uncompletedAndToday ||
-        TaskFilter.uncompletedAndNotToday =>
+        TaskFilter.inbox ||
+        TaskFilter.today =>
           true,
         TaskFilter.completed || TaskFilter.completedToday => false,
       };

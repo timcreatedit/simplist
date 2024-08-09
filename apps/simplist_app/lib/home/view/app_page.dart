@@ -8,7 +8,9 @@ class AppPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AutoRouter(
-      navigatorObservers: () => [HeroController()],
+      navigatorObservers: () => [
+        HeroController(),
+      ],
     );
   }
 }

@@ -4,14 +4,12 @@ import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simplist_app/common/view/debounce_provider.dart';
-import 'package:simplist_app/home/view/home_providers.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/domain/tasks_repository.dart';
 import 'package:simplist_app/tasks/view/tasks_providers.dart';
 
 final $selectedTaskId = StateProvider.autoDispose<String?>((ref) {
-  ref.listen($currentList, (_, __) => ref.invalidateSelf());
   return null;
 });
 

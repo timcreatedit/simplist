@@ -100,10 +100,14 @@ class _NewTaskPreview extends HookConsumerWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            taskFilter.icon,
-                            color:
-                                context.colorScheme.onSurface.withOpacity(0.5),
+                          AnimatedSizeSwitcher(
+                            child: distanceProgress > 1
+                                ? null
+                                : Icon(
+                                    taskFilter.icon,
+                                    color: context.colorScheme.onSurface
+                                        .withOpacity(0.5),
+                                  ),
                           ),
                           const HSpace.xxs(),
                           Flexible(
@@ -111,21 +115,18 @@ class _NewTaskPreview extends HookConsumerWidget {
                               distanceProgress < 1.0
                                   ? context.l10n.keepDraggingForTask
                                   : context.l10n.newTask,
+                              style: distanceProgress < 1.0
+                                  ? null
+                                  : context.textTheme.bodyMedium?.copyWith(
+                                      color: context.colorScheme.onSurface
+                                          .withOpacity(.3),
+                                    ),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  AnimatedSize(
-                    duration: duration,
-                    child: distanceProgress >= 1.0
-                        ? Checkbox(
-                            value: false,
-                            onChanged: (_) {},
-                          )
-                        : const SizedBox.shrink(),
-                  )
                 ],
               ),
             ),

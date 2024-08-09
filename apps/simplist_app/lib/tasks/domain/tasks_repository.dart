@@ -96,10 +96,8 @@ interface class TasksRepository {
       TaskFilter.completedToday =>
         'completedOn >= @todayStart && completedOn <= @todayEnd',
       TaskFilter.uncompleted => 'completedOn = null',
-      TaskFilter.uncompletedAndToday =>
-        'completedOn = null && scheduled = "today"',
-      TaskFilter.uncompletedAndNotToday =>
-        'completedOn = null && scheduled != "today"',
+      TaskFilter.today => 'completedOn = null && scheduled = "today"',
+      TaskFilter.inbox => 'completedOn = null && scheduled != "today"',
     };
   }
 }

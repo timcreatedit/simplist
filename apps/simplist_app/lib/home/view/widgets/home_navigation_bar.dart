@@ -6,7 +6,6 @@ import 'package:rivership/rivership.dart';
 import 'package:simplist_app/common/view/extensions/context_convenience.dart';
 import 'package:simplist_app/common/view/extensions/task_filter_view_getters.dart';
 import 'package:simplist_app/common/view/spacing.dart';
-import 'package:simplist_app/home/view/home_providers.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/view/tasks_providers.dart';
 import 'package:simplist_app/tasks/view/widgets/draggable_task_card.dart';
@@ -23,13 +22,12 @@ class HomeNavigationBar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentList = ref.watch($currentList.select((v) => v.valueOrNull));
-
+    final page = usePage(controller).round();
     final expanded = useDelayed(
       delay: const Duration(seconds: 2),
       before: true,
       after: false,
-      keys: [...Colors.primaries, currentList],
+      keys: [...Colors.primaries, page],
     );
     return SafeArea(
       child: Padding(
@@ -53,7 +51,7 @@ class HomeNavigationBar extends HookConsumerWidget {
                   _ListNavigationItem(
                     filter: filter,
                     expanded: expanded,
-                    selected: currentList == filter,
+                    selected: page == index,
                     onPressed: () => controller.animateToPage(
                       index,
                       duration: Durations.short4,
