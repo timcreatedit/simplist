@@ -22,7 +22,7 @@ class TaskListTile extends HookConsumerWidget {
     final notifier = ref.watch($task(id).notifier);
     final completionFormat = useDateFormat(format: DateFormat.NUM_MONTH_DAY);
 
-    final isSelected = ref.watch($selectedTaskId.select((id) => id == this.id));
+    final isSelected = ref.watch($focusedTaskId.select((id) => id == this.id));
     return AnimatedSizeSwitcher(
       clipBehavior: Clip.none,
       immediateResize: true,
@@ -35,9 +35,7 @@ class TaskListTile extends HookConsumerWidget {
               child: Material(
                 child: ListTile(
                   iconColor: context.colorScheme.tertiary,
-                  onTap: task.completed
-                      ? null
-                      : () => ref.read($selectedTaskId.notifier).state = id,
+                  onTap: task.completed ? null : notifier.focus,
                   title: AnimatedDefaultTextStyle(
                     duration: Durations.short4,
                     style: context.textTheme.bodyMedium!.copyWith(
@@ -99,7 +97,7 @@ class TaskEditTile extends HookConsumerWidget {
               completed: completed,
               scheduled: scheduled,
             );
-        ref.read($selectedTaskId.notifier).state = null;
+        ref.read($focusedTaskId.notifier).state = null;
       },
     );
   }

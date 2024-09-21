@@ -46,7 +46,7 @@ class SignInForm extends HookConsumerWidget {
                     password: passwordController.text,
                   ),
             ),
-            if (state.hasError) Text("Couldn't sign you in"),
+            if (state.hasError) const Text("Couldn't sign you in"),
             ElevatedButton(
               onPressed: state.isLoading
                   ? null

@@ -27,7 +27,7 @@ class HomeNavigationBar extends HookConsumerWidget {
       delay: const Duration(seconds: 2),
       before: true,
       after: false,
-      keys: [...Colors.primaries, page],
+      keys: [page],
     );
     return SafeArea(
       child: Padding(

@@ -27,7 +27,7 @@ class DraggableTaskCard extends HookConsumerWidget {
     return DraggableAction(
       previewDistance: 50,
       onActivate: () async {
-        ref.read($selectedTaskId.notifier).state = null;
+        ref.read($focusedTaskId.notifier).state = null;
         return await context.router
                 .push<bool>(AddTaskRoute(toFilter: taskFilter)) ??
             false;

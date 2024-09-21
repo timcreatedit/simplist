@@ -15,22 +15,24 @@ class TaskEditCard extends HookConsumerWidget {
   const TaskEditCard.existing({
     required String this.id,
     required this.onSave,
-    this.showCheckbox = true,
+    this.onDelete,
     super.key,
-  }) : taskFilter = null;
+  })  : taskFilter = null,
+        isNew = false;
 
   const TaskEditCard.fromFilter({
     required TaskFilter this.taskFilter,
     required this.onSave,
-    this.showCheckbox = false,
     super.key,
-  }) : id = null;
+  })  : id = null,
+        isNew = true,
+        onDelete = null;
 
   final String? id;
 
   final TaskFilter? taskFilter;
-
-  final bool showCheckbox;
+  final bool isNew;
+  final VoidCallback? onDelete;
 
   final void Function(
     String title,
@@ -59,7 +61,7 @@ class TaskEditCard extends HookConsumerWidget {
     final controller = useTextEditingController(text: title, keys: [title]);
 
     // Save when closed
-    ref.listen($selectedTaskId.select((id) => id == this.id && this.id != null),
+    ref.listen($focusedTaskId.select((id) => id == this.id && this.id != null),
         (prev, next) {
       if (next == false) {
         onSave(
@@ -84,7 +86,7 @@ class TaskEditCard extends HookConsumerWidget {
                   Expanded(
                     child: CupertinoTextField.borderless(
                       controller: controller,
-                      autofocus: Platform.isMacOS,
+                      autofocus: Platform.isMacOS || isNew,
                       placeholder: context.l10n.newTask,
                       style: context.textTheme.bodyMedium,
                       onSubmitted: (_) => onSave(
@@ -94,7 +96,7 @@ class TaskEditCard extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                  if (showCheckbox) ...[
+                  if (isNew == false) ...[
                     const HSpace.s(),
                     Checkbox(
                       value: completed.value,
@@ -126,6 +128,7 @@ class ScheduleToggle extends HookConsumerWidget {
   final ValueChanged<ScheduleType> onValueChanged;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = context.colorScheme;
     return CupertinoSlidingSegmentedControl(
       groupValue: value,
       children: {
@@ -133,6 +136,14 @@ class ScheduleToggle extends HookConsumerWidget {
         ScheduleType.today: _buildFor(context, ScheduleType.today),
       },
       onValueChanged: (v) => onValueChanged(v!),
+      backgroundColor: switch (colorScheme.brightness) {
+        Brightness.dark => colorScheme.surface,
+        Brightness.light => context.colorScheme.surfaceContainerHighest,
+      },
+      thumbColor: switch (colorScheme.brightness) {
+        Brightness.dark => colorScheme.surfaceContainerHighest,
+        Brightness.light => context.colorScheme.surface,
+      },
     );
   }
 

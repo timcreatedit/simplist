@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simplist_app/common/view/debounce_provider.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
@@ -31,5 +32,23 @@ class Tasks extends AutoDisposeFamilyStreamNotifier<List<Task>, TaskFilter> {
       title: title,
       scheduled: scheduled,
     );
+  }
+}
+
+//TODO here
+class SelectedTasks extends AutoDisposeFamilyNotifier<Set<String>, TaskFilter> {
+  @override
+  Set<String> build(TaskFilter arg) {
+    return {};
+  }
+
+  void toggle(String id) {
+    state = state.contains(id)
+        ? {...state.whereNot((s) => s == id)}
+        : {...state, id};
+  }
+
+  void clear() {
+    state = {};
   }
 }

@@ -20,7 +20,7 @@ class HomePage extends HookConsumerWidget {
       body: AutoTabsRouter.pageView(
         navigatorObservers: () => [
           HeroController(),
-          OnAnyObserver(() => ref.invalidate($selectedTaskId)),
+          OnAnyObserver(() => ref.invalidate($focusedTaskId)),
         ],
         builder: (context, child, pageController) => Stack(
           children: [

@@ -9,7 +9,7 @@ import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/domain/tasks_repository.dart';
 import 'package:simplist_app/tasks/view/tasks_providers.dart';
 
-final $selectedTaskId = StateProvider.autoDispose<String?>((ref) {
+final $focusedTaskId = StateProvider.autoDispose<String?>((ref) {
   return null;
 });
 
@@ -77,6 +77,10 @@ class TaskNotifier extends AutoDisposeFamilyStreamNotifier<Task?, String?> {
           AsyncData(task.copyWith(completedOn: completed ? clock.now() : null));
       ref.read($debounce.notifier).bump();
     }
+  }
+
+  Future<void> focus() async {
+    ref.read($focusedTaskId.notifier).state = arg;
   }
 
   Future<void> _flush() async {

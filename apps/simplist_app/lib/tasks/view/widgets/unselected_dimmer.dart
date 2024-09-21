@@ -19,11 +19,12 @@ class UnselectedDimmer extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dim = ref.watch(
-      $selectedTaskId.select((id) => id != null && id != exceptForId),
+      $focusedTaskId.select((id) => id != null && id != exceptForId),
     );
     final dimColor = context.colorScheme.surface;
     final filterColor =
         dim ? dimColor.withOpacity(.6) : dimColor.withOpacity(0);
+
     return Stack(
       children: [
         TweenAnimationBuilder(
@@ -48,9 +49,9 @@ class UnselectedDimmer extends HookConsumerWidget {
           Positioned.fill(
             child: GestureDetector(
               child: ModalBarrier(
-                  semanticsLabel: "Close task",
-                  onDismiss: () =>
-                      ref.read($selectedTaskId.notifier).state = null),
+                semanticsLabel: "Close task",
+                onDismiss: () => ref.read($focusedTaskId.notifier).state = null,
+              ),
             ),
           ),
       ],
