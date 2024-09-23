@@ -30,14 +30,6 @@ class AppRouter extends RootStackRouter {
                   path: 'inbox',
                   page: InboxRoute.page,
                 ),
-                AutoRoute(
-                  path: '',
-                  page: TodayRoute.page,
-                ),
-                AutoRoute(
-                  path: 'logbook',
-                  page: LogbookRoute.page,
-                ),
               ],
             ),
             CustomRoute<void>(

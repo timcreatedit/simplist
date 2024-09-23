@@ -35,7 +35,6 @@ class Tasks extends AutoDisposeFamilyStreamNotifier<List<Task>, TaskFilter> {
   }
 }
 
-//TODO here
 class SelectedTasks extends AutoDisposeFamilyNotifier<Set<String>, TaskFilter> {
   @override
   Set<String> build(TaskFilter arg) {

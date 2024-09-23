@@ -28,7 +28,7 @@ interface class TasksRepository {
 
   RecordService get _collection => pb.collection("tasks");
 
-  final _sorting = "completedOn,-scheduled";
+  final _sorting = "created";
 
   Stream<List<Task>> watchAll({
     TaskFilter filter = TaskFilter.none,
@@ -97,7 +97,7 @@ interface class TasksRepository {
         'completedOn >= @todayStart && completedOn <= @todayEnd',
       TaskFilter.uncompleted => 'completedOn = null',
       TaskFilter.today => 'completedOn = null && scheduled = "today"',
-      TaskFilter.inbox => 'completedOn = null && scheduled != "today"',
+      TaskFilter.inbox => 'scheduled != "today"',
     };
   }
 }

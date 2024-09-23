@@ -44,7 +44,7 @@ class AddTaskPage extends HookConsumerWidget {
                 },
               ),
             ),
-          )
+          ),
         ],
       ),
     );

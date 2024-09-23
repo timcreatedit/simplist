@@ -16,17 +16,12 @@ class HomePageTitle extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
-        AnimatedSwitcher(
-          duration: Durations.short4,
-          child: Icon(
-            filter.icon,
-            color: context.colorScheme.tertiary,
-          ),
+        ImageIcon(
+          AssetImage('assets/icons/icon.png'),
+          size: 20,
         ),
         const HSpace.xs(),
-        Text(
-          filter.translation(context.l10n),
-        ),
+        Text("Simplist"),
       ],
     );
   }

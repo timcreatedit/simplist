@@ -73,7 +73,6 @@ class _ListNavigationItem extends HookConsumerWidget {
     required this.expanded,
     required this.selected,
     required this.onPressed,
-    super.key,
   });
   final TaskFilter filter;
   final bool expanded;

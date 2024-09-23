@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:pocketbase/pocketbase.dart';
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 
 /// {@template pocketbased.SembastAuthStore}

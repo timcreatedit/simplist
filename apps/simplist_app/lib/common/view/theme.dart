@@ -12,9 +12,7 @@ class ThemeNotifier extends AutoDisposeFamilyNotifier<ThemeData, Brightness> {
   @override
   ThemeData build(Brightness arg) {
     final colorScheme = SeedColorScheme.fromSeeds(
-      primaryKey: Color.fromARGB(255, 11, 179, 87),
-      brightness: arg,
-      variant: FlexSchemeVariant.neutral,
+      primaryKey: Colors.blue,
     );
     return ThemeData.from(
       colorScheme: colorScheme,

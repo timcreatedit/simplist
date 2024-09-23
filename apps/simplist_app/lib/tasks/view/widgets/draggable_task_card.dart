@@ -37,7 +37,7 @@ class DraggableTaskCard extends HookConsumerWidget {
         distanceProgress: progress,
       ),
       childWhenDragging: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Material(
           shape: const StadiumBorder(),
           color: context.colorScheme.surfaceContainerHighest,

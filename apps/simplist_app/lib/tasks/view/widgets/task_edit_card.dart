@@ -48,15 +48,19 @@ class TaskEditCard extends HookConsumerWidget {
       _ => ref.watch($task(id)).valueOrNull?.title ?? "",
     };
 
-    final completed = useState(switch (id) {
-      null => false,
-      _ => ref.watch($task(id)).valueOrNull?.completed ?? false,
-    });
+    final completed = useState(
+      switch (id) {
+        null => false,
+        _ => ref.watch($task(id)).valueOrNull?.completed ?? false,
+      },
+    );
 
-    final scheduled = useState(switch (id) {
-      null => taskFilter?.scheduleType ?? ScheduleType.none,
-      _ => ref.watch($task(id)).valueOrNull?.scheduled ?? ScheduleType.none,
-    });
+    final scheduled = useState(
+      switch (id) {
+        null => taskFilter?.scheduleType ?? ScheduleType.none,
+        _ => ref.watch($task(id)).valueOrNull?.scheduled ?? ScheduleType.none,
+      },
+    );
 
     final controller = useTextEditingController(text: title, keys: [title]);
 
@@ -73,6 +77,7 @@ class TaskEditCard extends HookConsumerWidget {
     });
 
     return Card(
+      elevation: 2,
       margin: const EdgeInsets.all(Spacers.m),
       child: Padding(
         padding: const EdgeInsets.all(Spacers.m),
@@ -104,11 +109,6 @@ class TaskEditCard extends HookConsumerWidget {
                     ),
                   ],
                 ],
-              ),
-              const VSpace.s(),
-              ScheduleToggle(
-                value: scheduled.value,
-                onValueChanged: (v) => scheduled.value = v,
               ),
             ],
           ),
