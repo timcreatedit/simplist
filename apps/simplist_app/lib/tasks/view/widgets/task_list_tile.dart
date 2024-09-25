@@ -7,6 +7,7 @@ import 'package:simplist_app/common/view/spacing.dart';
 import 'package:simplist_app/tasks/view/task_notifier.dart';
 import 'package:simplist_app/tasks/view/widgets/task_edit_card.dart';
 import 'package:simplist_app/tasks/view/widgets/unselected_dimmer.dart';
+import 'package:simplist_design_system/simplist_design_system.dart';
 
 class TaskListTile extends HookConsumerWidget {
   const TaskListTile({
@@ -38,10 +39,10 @@ class TaskListTile extends HookConsumerWidget {
                   onTap: task.completed ? null : notifier.focus,
                   title: AnimatedDefaultTextStyle(
                     duration: Durations.short4,
-                    style: context.textTheme.bodyMedium!.copyWith(
+                    style: context.typographySemantic.bodyLarge.copyWith(
                       color: task.completed
-                          ? context.colorScheme.onSurface.withOpacity(.5)
-                          : context.colorScheme.onSurface,
+                          ? context.colorsSemantic.textSecondary
+                          : context.colorsSemantic.textPrimary,
                     ),
                     child: Text(task.title),
                   ),
@@ -53,12 +54,19 @@ class TaskListTile extends HookConsumerWidget {
                           final date? => Text(
                               key: const ValueKey(true),
                               completionFormat.format(date),
+                              style: context.typographySemantic.labelSmall
+                                  .copyWith(
+                                color:
+                                    context.colorsSemantic.interactivePrimary,
+                              ),
                             ),
                           null => null
                         },
                       ),
                       Checkbox(
                         value: task.completed,
+                        activeColor: context.colorsSemantic.interactivePrimary,
+                        checkColor: context.colorsSemantic.interactiveOnPrimary,
                         onChanged: (value) => notifier.setComplete(
                           completed: value!,
                         ),

@@ -29,6 +29,8 @@ dependencies:
   riverpod: ^2.5.1
   rivership: ^0.1.2
   rxdart: ^0.28.0
+  simplist_design_system:
+    path: ../../packages/simplist_design_system
   sliver_tools: ^0.2.12
 
 dev_dependencies:

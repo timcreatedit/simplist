@@ -10,6 +10,7 @@ import 'package:simplist_app/common/view/spacing.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/view/task_notifier.dart';
+import 'package:simplist_design_system/simplist_design_system.dart';
 
 class TaskEditCard extends HookConsumerWidget {
   const TaskEditCard.existing({
@@ -93,7 +94,7 @@ class TaskEditCard extends HookConsumerWidget {
                       controller: controller,
                       autofocus: Platform.isMacOS || isNew,
                       placeholder: context.l10n.newTask,
-                      style: context.textTheme.bodyMedium,
+                      style: context.typographySemantic.bodyLarge,
                       onSubmitted: (_) => onSave(
                         controller.text,
                         completed.value,
@@ -105,6 +106,8 @@ class TaskEditCard extends HookConsumerWidget {
                     const HSpace.s(),
                     Checkbox(
                       value: completed.value,
+                      activeColor: context.colorsSemantic.interactivePrimary,
+                      checkColor: context.colorsSemantic.interactiveOnPrimary,
                       onChanged: (value) => completed.value = value!,
                     ),
                   ],
