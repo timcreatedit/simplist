@@ -42,13 +42,13 @@ class SembastAuthStore extends AuthStore {
     super.save(newToken, newModel);
     db.transaction(
       (transaction) async {
-        await store.record('token').add(transaction, token);
+        await store.record('token').put(transaction, token);
 
         switch (newModel) {
           case final RecordModel model:
-            await store.record('model').add(transaction, model.toJson());
+            await store.record('model').put(transaction, model.toJson());
           case final AdminModel model:
-            await store.record('model').add(transaction, model.toJson());
+            await store.record('model').put(transaction, model.toJson());
         }
       },
     );
