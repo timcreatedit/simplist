@@ -35,7 +35,7 @@ class DraggableAction extends HookConsumerWidget {
 
     final offset = useOffsetMotion(
       motion: const CupertinoMotion.bouncy(),
-      active: startOffset.value != null,
+      active: startOffset.value == null,
       value: targetOffset,
     );
 

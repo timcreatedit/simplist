@@ -32,7 +32,7 @@ class Tasks extends StreamNotifier<List<Task>> {
   }
 }
 
-//TODO(tim): here
+// TODO(tim): here
 class SelectedTasks extends Notifier<Set<String>> {
   SelectedTasks(this.arg);
 
