@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 
-class CurrentListNotifier extends AutoDisposeAsyncNotifier<TaskFilter> {
+class CurrentListNotifier extends AsyncNotifier<TaskFilter> {
   @override
   FutureOr<TaskFilter> build() {
     return TaskFilter.inbox;

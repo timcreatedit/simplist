@@ -28,14 +28,13 @@ class DraggableTaskCard extends HookConsumerWidget {
       previewDistance: 50,
       onActivate: () async {
         ref.read($focusedTaskId.notifier).state = null;
-        return await context.router
-                .push<bool>(AddTaskRoute(toFilter: taskFilter)) ??
+        return await context.router.push<bool>(
+              AddTaskRoute(toFilter: taskFilter),
+            ) ??
             false;
       },
-      previewBuilder: (context, progress) => _NewTaskPreview(
-        taskFilter: taskFilter,
-        distanceProgress: progress,
-      ),
+      previewBuilder: (context, progress) =>
+          _NewTaskPreview(taskFilter: taskFilter, distanceProgress: progress),
       childWhenDragging: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
         child: Material(
@@ -61,16 +60,13 @@ class _NewTaskPreview extends HookConsumerWidget {
     final screenWidth = MediaQuery.sizeOf(context).width;
     const duration = Durations.short4;
     final haptic = distanceProgress >= 1.0;
-    useEffect(
-      () {
-        if (haptic) HapticFeedback.selectionClick();
-        return null;
-      },
-      [haptic],
-    );
+    useEffect(() {
+      if (haptic) HapticFeedback.selectionClick();
+      return null;
+    }, [haptic]);
 
-    return Hero(
-      flightShuttleBuilder: fadeShuttle,
+    return Heroine(
+      flightShuttleBuilder: const FadeShuttleBuilder(),
       tag: taskFilter,
       child: Card(
         elevation: distanceProgress < 1 ? 0 : CardTheme.of(context).elevation,

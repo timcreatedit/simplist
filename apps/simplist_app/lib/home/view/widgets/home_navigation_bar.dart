@@ -73,8 +73,8 @@ class _ListNavigationItem extends HookConsumerWidget {
     required this.expanded,
     required this.selected,
     required this.onPressed,
-    super.key,
   });
+
   final TaskFilter filter;
   final bool expanded;
   final bool selected;
@@ -109,7 +109,7 @@ class _ListNavigationItem extends HookConsumerWidget {
     final backgroundColor = useTweenedValue<Color?>(
       selected
           ? context.colorScheme.tertiaryContainer
-          : context.colorScheme.tertiaryContainer.withOpacity(0),
+          : context.colorScheme.tertiaryContainer.withValues(alpha: 0),
     );
 
     final button = AnimatedPadding(
@@ -154,10 +154,7 @@ class _ListNavigationItem extends HookConsumerWidget {
     );
 
     if (filter.canCreate) {
-      return DraggableTaskCard(
-        taskFilter: filter,
-        child: button,
-      );
+      return DraggableTaskCard(taskFilter: filter, child: button);
     } else {
       return button;
     }

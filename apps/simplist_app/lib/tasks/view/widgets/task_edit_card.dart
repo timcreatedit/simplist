@@ -17,16 +17,16 @@ class TaskEditCard extends HookConsumerWidget {
     required this.onSave,
     this.onDelete,
     super.key,
-  })  : taskFilter = null,
-        isNew = false;
+  }) : taskFilter = null,
+       isNew = false;
 
   const TaskEditCard.fromFilter({
     required TaskFilter this.taskFilter,
     required this.onSave,
     super.key,
-  })  : id = null,
-        isNew = true,
-        onDelete = null;
+  }) : id = null,
+       isNew = true,
+       onDelete = null;
 
   final String? id;
 
@@ -39,38 +39,37 @@ class TaskEditCard extends HookConsumerWidget {
     // ignore: avoid_positional_boolean_parameters
     bool completed,
     ScheduleType scheduled,
-  ) onSave;
+  )
+  onSave;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final title = switch (id) {
       null => "",
-      _ => ref.watch($task(id)).valueOrNull?.title ?? "",
+      _ => ref.watch($task(id)).value?.title ?? "",
     };
 
     final completed = useState(switch (id) {
       null => false,
-      _ => ref.watch($task(id)).valueOrNull?.completed ?? false,
+      _ => ref.watch($task(id)).value?.completed ?? false,
     });
 
     final scheduled = useState(switch (id) {
       null => taskFilter?.scheduleType ?? ScheduleType.none,
-      _ => ref.watch($task(id)).valueOrNull?.scheduled ?? ScheduleType.none,
+      _ => ref.watch($task(id)).value?.scheduled ?? ScheduleType.none,
     });
 
     final controller = useTextEditingController(text: title, keys: [title]);
 
     // Save when closed
-    ref.listen($focusedTaskId.select((id) => id == this.id && this.id != null),
-        (prev, next) {
-      if (next == false) {
-        onSave(
-          controller.text,
-          completed.value,
-          scheduled.value,
-        );
-      }
-    });
+    ref.listen(
+      $focusedTaskId.select((id) => id == this.id && this.id != null),
+      (prev, next) {
+        if (next == false) {
+          onSave(controller.text, completed.value, scheduled.value);
+        }
+      },
+    );
 
     return Card(
       margin: const EdgeInsets.all(Spacers.m),

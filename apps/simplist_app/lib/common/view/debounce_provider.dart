@@ -10,26 +10,26 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 ///
 /// Notifiers can then `ref.listen` to [$onDebounceFlush] and flush their
 /// updates whenever that fires.
-final $debounce = NotifierProvider.autoDispose<Debounce, bool>(
-  Debounce.new,
-);
+final $debounce = NotifierProvider.autoDispose(Debounce.new);
 
 /// Fires whenever all notifiers that depend on this should flush their updates.
 ///
 /// Provides the time of the latest flush.
-final $onDebounceFlush = FutureProvider.autoDispose<DateTime>((ref) async {
-  ref.listen(
-    $debounce,
-    (previous, next) {
-      if ((previous ?? false) && true) {
-        ref.state = AsyncData(clock.now());
-      }
-    },
-  );
-  return Completer<DateTime>().future;
-});
+final $onDebounceFlush = AsyncNotifierProvider.autoDispose(DebounceFlush.new);
 
-class Debounce extends AutoDisposeNotifier<bool> {
+class DebounceFlush extends AsyncNotifier<DateTime> {
+  @override
+  Future<DateTime> build() async {
+    ref.listen($debounce, (previous, next) {
+      if ((previous ?? false) && true) {
+        state = AsyncData(clock.now());
+      }
+    });
+    return Completer<DateTime>().future;
+  }
+}
+
+class Debounce extends Notifier<bool> {
   Timer? _timer;
 
   @override

@@ -7,14 +7,14 @@ import 'package:simplist_app/tasks/domain/task.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/domain/tasks_repository.dart';
 
-final $tasks =
-    StreamNotifierProvider.autoDispose.family<Tasks, List<Task>, TaskFilter>(
-  Tasks.new,
-);
+final $tasks = StreamNotifierProvider.autoDispose.family(Tasks.new);
 
-class Tasks extends AutoDisposeFamilyStreamNotifier<List<Task>, TaskFilter> {
+class Tasks extends StreamNotifier<List<Task>> {
+  Tasks(this.arg);
+
+  final TaskFilter arg;
   @override
-  Stream<List<Task>> build(TaskFilter arg) async* {
+  Stream<List<Task>> build() async* {
     final repo = await ref.watch($taskRepository.future);
 
     await for (final e in repo.watchAll(filter: arg)) {
@@ -28,17 +28,18 @@ class Tasks extends AutoDisposeFamilyStreamNotifier<List<Task>, TaskFilter> {
     required ScheduleType scheduled,
   }) async {
     final repo = await ref.read($taskRepository.future);
-    return repo.create(
-      title: title,
-      scheduled: scheduled,
-    );
+    return repo.create(title: title, scheduled: scheduled);
   }
 }
 
-//TODO here
-class SelectedTasks extends AutoDisposeFamilyNotifier<Set<String>, TaskFilter> {
+//TODO(tim): here
+class SelectedTasks extends Notifier<Set<String>> {
+  SelectedTasks(this.arg);
+
+  final TaskFilter arg;
+
   @override
-  Set<String> build(TaskFilter arg) {
+  Set<String> build() {
     return {};
   }
 

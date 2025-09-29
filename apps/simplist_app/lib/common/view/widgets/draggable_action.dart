@@ -33,10 +33,9 @@ class DraggableAction extends HookConsumerWidget {
     final current = useState<Offset>(Offset.zero);
     final targetOffset = current.value - (startOffset.value ?? Offset.zero);
 
-    final offset = useSpringAnimation(
-      spring: startOffset.value == null
-          ? SimpleSpring.bouncy
-          : SimpleSpring.instant,
+    final offset = useOffsetMotion(
+      motion: const CupertinoMotion.bouncy(),
+      active: startOffset.value != null,
       value: targetOffset,
     );
 
@@ -58,10 +57,7 @@ class DraggableAction extends HookConsumerWidget {
           offset: offset,
           child: Stack(
             children: [
-              Visibility.maintain(
-                visible: false,
-                child: child,
-              ),
+              Visibility.maintain(visible: false, child: child),
               Positioned.fill(
                 child: OverflowBox(
                   maxWidth: double.infinity,
@@ -74,10 +70,7 @@ class DraggableAction extends HookConsumerWidget {
                             context,
                             offset.distance / activateDistance,
                           )
-                        : Center(
-                            key: const ValueKey(true),
-                            child: child,
-                          ),
+                        : Center(key: const ValueKey(true), child: child),
                   ),
                 ),
               ),

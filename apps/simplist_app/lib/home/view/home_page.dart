@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rivership/rivership.dart';
 import 'package:simplist_app/common/routing/on_any_observer.dart';
 import 'package:simplist_app/home/view/widgets/home_navigation_bar.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
@@ -19,7 +20,7 @@ class HomePage extends HookConsumerWidget {
       resizeToAvoidBottomInset: false,
       body: AutoTabsRouter.pageView(
         navigatorObservers: () => [
-          HeroController(),
+          HeroineController(),
           OnAnyObserver(() => ref.invalidate($focusedTaskId)),
         ],
         builder: (context, child, pageController) => Stack(

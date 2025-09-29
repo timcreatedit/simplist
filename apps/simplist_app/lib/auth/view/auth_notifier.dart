@@ -8,7 +8,7 @@ final $auth = StreamNotifierProvider.autoDispose<AuthNotifier, User?>(
   AuthNotifier.new,
 );
 
-class AuthNotifier extends AutoDisposeStreamNotifier<User?> {
+class AuthNotifier extends StreamNotifier<User?> {
   @override
   Stream<User?> build() async* {
     final repo = await ref.watch($authRepository.future);
@@ -32,6 +32,9 @@ class AuthNotifier extends AutoDisposeStreamNotifier<User?> {
       switch (task) {
         case AsyncError(:final error, :final stackTrace):
           state = AsyncError(error, stackTrace);
+        case AsyncData() || AsyncLoading():
+          // do nothing, the stream will update the state
+          break;
       }
     }
   }

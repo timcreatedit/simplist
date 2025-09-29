@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:simplist_app/common/view/debounce_provider.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
@@ -13,20 +14,24 @@ final $focusedTaskId = StateProvider.autoDispose<String?>((ref) {
   return null;
 });
 
-final $task = StreamNotifierProvider.autoDispose
-    .family<TaskNotifier, Task?, String?>(TaskNotifier.new);
+final $task = StreamNotifierProvider.autoDispose.family(TaskNotifier.new);
 
-class TaskNotifier extends AutoDisposeFamilyStreamNotifier<Task?, String?> {
+class TaskNotifier extends StreamNotifier<Task?> {
+  TaskNotifier(this.id);
+
+  final String? id;
+
   @override
-  Stream<Task?> build(String? arg) async* {
-    if (arg == null) {
+  Stream<Task?> build() async* {
+    final id = this.id;
+    if (id == null) {
       yield null;
       return;
     }
 
     if (state.hasValue == false) {
       if (ref.read($tasks(TaskFilter.none)) case AsyncData(:final value)) {
-        if (value.firstWhereOrNull((t) => t.id == arg) case final cache?) {
+        if (value.firstWhereOrNull((t) => t.id == id) case final cache?) {
           yield cache;
         }
       }
@@ -34,16 +39,13 @@ class TaskNotifier extends AutoDisposeFamilyStreamNotifier<Task?, String?> {
 
     ref.listen($onDebounceFlush, (_, __) => _flush());
     final repo = await ref.watch($taskRepository.future);
-    await for (final e in repo.watch(arg)) {
+    await for (final e in repo.watch(id)) {
       yield e;
     }
   }
 
-  Future<void> create({
-    required String title,
-    bool today = false,
-  }) async {
-    if (arg != null) throw StateError("Can't create from existing");
+  Future<void> create({required String title, bool today = false}) async {
+    if (id != null) throw StateError("Can't create from existing");
     final repo = await ref.watch($taskRepository.future);
     state = const AsyncLoading();
     final result = await repo.create(
@@ -73,14 +75,15 @@ class TaskNotifier extends AutoDisposeFamilyStreamNotifier<Task?, String?> {
 
   Future<void> setComplete({bool completed = true}) async {
     if (state case AsyncData(value: final task?)) {
-      state =
-          AsyncData(task.copyWith(completedOn: completed ? clock.now() : null));
+      state = AsyncData(
+        task.copyWith(completedOn: completed ? clock.now() : null),
+      );
       ref.read($debounce.notifier).bump();
     }
   }
 
   Future<void> focus() async {
-    ref.read($focusedTaskId.notifier).state = arg;
+    ref.read($focusedTaskId.notifier).state = id;
   }
 
   Future<void> _flush() async {

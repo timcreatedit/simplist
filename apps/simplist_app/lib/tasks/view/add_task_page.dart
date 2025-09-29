@@ -9,10 +9,7 @@ import 'package:simplist_app/tasks/view/widgets/task_edit_card.dart';
 
 @RoutePage()
 class AddTaskPage extends HookConsumerWidget {
-  const AddTaskPage({
-    required this.toFilter,
-    super.key,
-  });
+  const AddTaskPage({required this.toFilter, super.key});
 
   final TaskFilter toFilter;
 
@@ -21,30 +18,25 @@ class AddTaskPage extends HookConsumerWidget {
     final notifier = ref.watch($tasks(toFilter).notifier);
 
     return Scaffold(
-      backgroundColor: context.colorScheme.surface.withOpacity(.8),
+      backgroundColor: context.colorScheme.surface.withValues(alpha: .8),
       body: Stack(
         children: [
           Positioned.fill(
-            child: ModalBarrier(
-              onDismiss: () => context.router.maybePop(),
-            ),
+            child: ModalBarrier(onDismiss: () => context.router.maybePop()),
           ),
           Center(
-            child: Hero(
-              flightShuttleBuilder: fadeShuttle,
+            child: Heroine(
+              flightShuttleBuilder: const FadeShuttleBuilder(),
               tag: toFilter,
               child: TaskEditCard.fromFilter(
                 taskFilter: toFilter,
                 onSave: (title, _, scheduled) {
-                  notifier.create(
-                    title: title,
-                    scheduled: scheduled,
-                  );
+                  notifier.create(title: title, scheduled: scheduled);
                   context.router.maybePop();
                 },
               ),
             ),
-          )
+          ),
         ],
       ),
     );

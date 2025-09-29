@@ -3,23 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simplist_app/common/view/spacing.dart';
 
-final $theme =
-    NotifierProvider.autoDispose.family<ThemeNotifier, ThemeData, Brightness>(
-  ThemeNotifier.new,
-);
+final $theme = NotifierProvider.autoDispose.family(ThemeNotifier.new);
 
-class ThemeNotifier extends AutoDisposeFamilyNotifier<ThemeData, Brightness> {
+class ThemeNotifier extends Notifier<ThemeData> {
+  ThemeNotifier(this.brightness);
+
+  final Brightness brightness;
+
   @override
-  ThemeData build(Brightness arg) {
+  ThemeData build() {
     final colorScheme = SeedColorScheme.fromSeeds(
-      primaryKey: Color.fromARGB(255, 11, 179, 87),
-      brightness: arg,
+      primaryKey: const Color.fromARGB(255, 11, 179, 87),
+      brightness: brightness,
       variant: FlexSchemeVariant.neutral,
     );
-    return ThemeData.from(
-      colorScheme: colorScheme,
-    ).copyWith(
-      cardTheme: CardTheme(
+    return ThemeData.from(colorScheme: colorScheme).copyWith(
+      cardTheme: CardThemeData(
         margin: const EdgeInsets.all(Spacers.xxs),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Spacers.m),
