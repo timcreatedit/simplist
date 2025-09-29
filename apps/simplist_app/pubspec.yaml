@@ -2,9 +2,10 @@ name: simplist_app
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
+resolution: workspace
 
 environment:
-  sdk: '>=3.4.4 <4.0.0'
+  sdk: '>=3.9.0 <4.0.0'
 
 dependencies:
   animated_reorderable_list: ^1.0.8
@@ -16,18 +17,18 @@ dependencies:
   fluid_animations: ^1.0.0
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.20.5
+  flutter_hooks: ^0.21.3
   flutter_localizations:
     sdk: flutter
   formz: ^0.7.0
   freezed_annotation: ^2.4.4
-  hooks_riverpod: ^2.5.1
+  hooks_riverpod: ^3.0.0
   implicitly_animated_reorderable_list_2: ^0.6.0
-  intl: ^0.19.0
+  intl: any # pinned by flutter sdk
   pocketbase: ^0.18.1
   pocketbased: ^0.1.0
-  riverpod: ^2.5.1
-  rivership: ^0.1.2
+  riverpod: ^3.0.0
+  rivership: ^0.4.0
   rxdart: ^0.28.0
   sliver_tools: ^0.2.12
 
@@ -39,7 +40,7 @@ dev_dependencies:
   freezed: ^2.5.2
   json_serializable: ^6.8.0
   lintervention: ^0.1.1
-  rivership_test: ^0.1.0+2
+  rivership_test: ^0.2.0
 
 flutter:
   uses-material-design: true
