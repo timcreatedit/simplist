@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -29,13 +30,10 @@ class AddTaskRoute extends _i10.PageRouteInfo<AddTaskRouteArgs> {
     _i12.Key? key,
     List<_i10.PageRouteInfo>? children,
   }) : super(
-          AddTaskRoute.name,
-          args: AddTaskRouteArgs(
-            toFilter: toFilter,
-            key: key,
-          ),
-          initialChildren: children,
-        );
+         AddTaskRoute.name,
+         args: AddTaskRouteArgs(toFilter: toFilter, key: key),
+         initialChildren: children,
+       );
 
   static const String name = 'AddTaskRoute';
 
@@ -43,19 +41,13 @@ class AddTaskRoute extends _i10.PageRouteInfo<AddTaskRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<AddTaskRouteArgs>();
-      return _i1.AddTaskPage(
-        toFilter: args.toFilter,
-        key: args.key,
-      );
+      return _i1.AddTaskPage(toFilter: args.toFilter, key: args.key);
     },
   );
 }
 
 class AddTaskRouteArgs {
-  const AddTaskRouteArgs({
-    required this.toFilter,
-    this.key,
-  });
+  const AddTaskRouteArgs({required this.toFilter, this.key});
 
   final _i11.TaskFilter toFilter;
 
@@ -71,10 +63,7 @@ class AddTaskRouteArgs {
 /// [_i2.AppPage]
 class AppRoute extends _i10.PageRouteInfo<void> {
   const AppRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          AppRoute.name,
-          initialChildren: children,
-        );
+    : super(AppRoute.name, initialChildren: children);
 
   static const String name = 'AppRoute';
 
@@ -90,10 +79,7 @@ class AppRoute extends _i10.PageRouteInfo<void> {
 /// [_i3.HomePage]
 class HomeRoute extends _i10.PageRouteInfo<void> {
   const HomeRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          HomeRoute.name,
-          initialChildren: children,
-        );
+    : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
@@ -109,10 +95,7 @@ class HomeRoute extends _i10.PageRouteInfo<void> {
 /// [_i4.InboxPage]
 class InboxRoute extends _i10.PageRouteInfo<void> {
   const InboxRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          InboxRoute.name,
-          initialChildren: children,
-        );
+    : super(InboxRoute.name, initialChildren: children);
 
   static const String name = 'InboxRoute';
 
@@ -128,10 +111,7 @@ class InboxRoute extends _i10.PageRouteInfo<void> {
 /// [_i5.LogbookPage]
 class LogbookRoute extends _i10.PageRouteInfo<void> {
   const LogbookRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          LogbookRoute.name,
-          initialChildren: children,
-        );
+    : super(LogbookRoute.name, initialChildren: children);
 
   static const String name = 'LogbookRoute';
 
@@ -147,10 +127,7 @@ class LogbookRoute extends _i10.PageRouteInfo<void> {
 /// [_i6.SignInPage]
 class SignInRoute extends _i10.PageRouteInfo<void> {
   const SignInRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          SignInRoute.name,
-          initialChildren: children,
-        );
+    : super(SignInRoute.name, initialChildren: children);
 
   static const String name = 'SignInRoute';
 
@@ -166,10 +143,7 @@ class SignInRoute extends _i10.PageRouteInfo<void> {
 /// [_i7.TodayPage]
 class TodayRoute extends _i10.PageRouteInfo<void> {
   const TodayRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          TodayRoute.name,
-          initialChildren: children,
-        );
+    : super(TodayRoute.name, initialChildren: children);
 
   static const String name = 'TodayRoute';
 
@@ -185,10 +159,7 @@ class TodayRoute extends _i10.PageRouteInfo<void> {
 /// [_i8.WelcomePage]
 class WelcomeRoute extends _i10.PageRouteInfo<void> {
   const WelcomeRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          WelcomeRoute.name,
-          initialChildren: children,
-        );
+    : super(WelcomeRoute.name, initialChildren: children);
 
   static const String name = 'WelcomeRoute';
 
@@ -204,10 +175,7 @@ class WelcomeRoute extends _i10.PageRouteInfo<void> {
 /// [_i9.WelcomeWrapperPage]
 class WelcomeWrapperRoute extends _i10.PageRouteInfo<void> {
   const WelcomeWrapperRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          WelcomeWrapperRoute.name,
-          initialChildren: children,
-        );
+    : super(WelcomeWrapperRoute.name, initialChildren: children);
 
   static const String name = 'WelcomeWrapperRoute';
 

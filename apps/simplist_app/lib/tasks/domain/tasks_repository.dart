@@ -9,8 +9,9 @@ import 'package:simplist_app/common/data/pocketbase_provider.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 
-final $taskRepository =
-    FutureProvider.autoDispose<TasksRepository>((ref) async {
+final $taskRepository = FutureProvider.autoDispose<TasksRepository>((
+  ref,
+) async {
   final user = await ref.watch($auth.future);
   if (user == null) throw Exception("Can't access tasks without user");
 
@@ -30,17 +31,12 @@ interface class TasksRepository {
 
   final _sorting = "completedOn,-scheduled";
 
-  Stream<List<Task>> watchAll({
-    TaskFilter filter = TaskFilter.none,
-  }) =>
+  Stream<List<Task>> watchAll({TaskFilter filter = TaskFilter.none}) =>
       _collection
-          .watchFullList(
-        sort: _sorting,
-        filter: _filterQuery(filter),
-      )
+          .watchFullList(sort: _sorting, filter: _filterQuery(filter))
           .map((l) {
-        return [for (final record in l) Task.fromJson(record.toJson())];
-      });
+            return [for (final record in l) Task.fromJson(record.toJson())];
+          });
 
   Future<List<Task>> getAll({TaskFilter filter = TaskFilter.none}) async {
     final records = await _collection.getFullList(
@@ -71,11 +67,7 @@ interface class TasksRepository {
     ScheduleType scheduled = ScheduleType.none,
   }) async {
     final model = await _collection.create(
-      body: {
-        'title': title,
-        'scheduled': scheduled.name,
-        'owner': user.id,
-      },
+      body: {'title': title, 'scheduled': scheduled.name, 'owner': user.id},
     );
     return Task.fromJson(model.toJson());
   }
