@@ -43,7 +43,7 @@ dev_dependencies:
     sdk: flutter
   freezed: ^3.2.3
   json_serializable: ^6.11.1
-  lintervention: ^0.1.1
+  lintervention: ^0.4.0
   rivership_test: ^0.2.0
 
 flutter: 

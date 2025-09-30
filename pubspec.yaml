@@ -12,7 +12,7 @@ workspace:
   - packages/pocketbased/
   
 dev_dependencies:
-  lintervention: ^0.1.1
+  lintervention: ^0.4.0
   melos: ^7.1.0
 
 melos:

@@ -17,7 +17,7 @@ class AppRouter extends RootStackRouter {
         CustomRoute<void>(
           path: '/',
           page: AppRoute.page,
-          durationInMilliseconds: Durations.long4.inMilliseconds,
+          duration: Durations.long4,
           transitionsBuilder: _fadethroughTransitionBuilder,
           guards: [AuthenticatedGuard(ref)],
           children: [
@@ -43,7 +43,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute<void>(
               path: 'add',
               page: AddTaskRoute.page,
-              durationInMilliseconds: Durations.medium4.inMilliseconds,
+              duration: Durations.medium4,
               transitionsBuilder: _fadethroughTransitionBuilder,
               opaque: false,
             ),
@@ -52,7 +52,7 @@ class AppRouter extends RootStackRouter {
         CustomRoute<void>(
           path: '/welcome',
           page: WelcomeWrapperRoute.page,
-          durationInMilliseconds: Durations.long4.inMilliseconds,
+          duration: Durations.long4,
           transitionsBuilder: _fadethroughTransitionBuilder,
           children: [
             AutoRoute(
