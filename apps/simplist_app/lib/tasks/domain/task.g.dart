@@ -6,41 +6,52 @@ part of 'task.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$TaskImpl _$$TaskImplFromJson(Map<String, dynamic> json) => _$TaskImpl(
+_Task _$TaskFromJson(Map<String, dynamic> json) => _Task(
   id: json['id'] as String,
   title: json['title'] as String,
-  created: DateTime.parse(json['created'] as String),
-  updated: DateTime.parse(json['updated'] as String),
-  scheduled:
-      $enumDecodeNullable(_$ScheduleTypeEnumMap, json['scheduled']) ??
-      ScheduleType.none,
-  completedOn: _$JsonConverterFromJson<String, DateTime?>(
-    json['completedOn'],
+  status:
+      $enumDecodeNullable(_$TaskStatusEnumMap, json['status']) ??
+      TaskStatus.todo,
+  completedAt: _$JsonConverterFromJson<String, DateTime?>(
+    json['completedAt'],
     const NullablePbDateConverter().fromJson,
   ),
-  scheduledOn: _$JsonConverterFromJson<String, DateTime?>(
-    json['scheduledOn'],
+  tags:
+      (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+  description: json['description'] as String?,
+  deadline: _$JsonConverterFromJson<String, DateTime?>(
+    json['deadline'],
     const NullablePbDateConverter().fromJson,
   ),
+  scheduled: _$JsonConverterFromJson<String, DateTime?>(
+    json['scheduled'],
+    const NullablePbDateConverter().fromJson,
+  ),
+  parentId: json['parentId'] as String?,
+  subtasks:
+      (json['subtasks'] as List<dynamic>?)
+          ?.map((e) => Task.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+  priority: json['priority'] as String?,
 );
 
-Map<String, dynamic> _$$TaskImplToJson(
-  _$TaskImpl instance,
-) => <String, dynamic>{
+Map<String, dynamic> _$TaskToJson(_Task instance) => <String, dynamic>{
   'id': instance.id,
   'title': instance.title,
-  'created': instance.created.toIso8601String(),
-  'updated': instance.updated.toIso8601String(),
-  'scheduled': _$ScheduleTypeEnumMap[instance.scheduled]!,
-  'completedOn': const NullablePbDateConverter().toJson(instance.completedOn),
-  'scheduledOn': const NullablePbDateConverter().toJson(instance.scheduledOn),
+  'status': _$TaskStatusEnumMap[instance.status]!,
+  'completedAt': const NullablePbDateConverter().toJson(instance.completedAt),
+  'tags': instance.tags,
+  'description': instance.description,
+  'deadline': const NullablePbDateConverter().toJson(instance.deadline),
+  'scheduled': const NullablePbDateConverter().toJson(instance.scheduled),
+  'parentId': instance.parentId,
+  'subtasks': instance.subtasks,
+  'priority': instance.priority,
 };
 
-const _$ScheduleTypeEnumMap = {
-  ScheduleType.none: 'none',
-  ScheduleType.today: 'today',
-  ScheduleType.on: 'on',
-};
+const _$TaskStatusEnumMap = {TaskStatus.todo: 'TODO', TaskStatus.done: 'DONE'};
 
 Value? _$JsonConverterFromJson<Json, Value>(
   Object? json,

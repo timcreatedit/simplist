@@ -126,7 +126,7 @@ class SliverAnimatedSizeSwitcher extends HookConsumerWidget {
         layoutBuilder: (currentChild, previousChildren) => SliverStack(
           children: [
             for (final c in previousChildren) SliverPositioned.fill(child: c),
-            if (currentChild != null) currentChild,
+            ?currentChild,
           ],
         ),
         transitionBuilder: (child, animation) => SliverFadeTransition(

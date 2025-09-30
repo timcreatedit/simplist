@@ -10,7 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i10;
-import 'package:flutter/material.dart' as _i12;
+import 'package:flutter/material.dart' as _i11;
 import 'package:simplist_app/auth/view/sign_in_page.dart' as _i6;
 import 'package:simplist_app/auth/view/welcome_page.dart' as _i8;
 import 'package:simplist_app/auth/view/welcome_wrapper_page.dart' as _i9;
@@ -18,7 +18,6 @@ import 'package:simplist_app/home/view/app_page.dart' as _i2;
 import 'package:simplist_app/home/view/home_page.dart' as _i3;
 import 'package:simplist_app/inbox/view/inbox_page.dart' as _i4;
 import 'package:simplist_app/logbook/view/logbook_page.dart' as _i5;
-import 'package:simplist_app/tasks/domain/task_filter.dart' as _i11;
 import 'package:simplist_app/tasks/view/add_task_page.dart' as _i1;
 import 'package:simplist_app/today/view/today_page.dart' as _i7;
 
@@ -26,8 +25,8 @@ import 'package:simplist_app/today/view/today_page.dart' as _i7;
 /// [_i1.AddTaskPage]
 class AddTaskRoute extends _i10.PageRouteInfo<AddTaskRouteArgs> {
   AddTaskRoute({
-    required _i11.TaskFilter toFilter,
-    _i12.Key? key,
+    required InvalidType toFilter,
+    _i11.Key? key,
     List<_i10.PageRouteInfo>? children,
   }) : super(
          AddTaskRoute.name,
@@ -49,14 +48,24 @@ class AddTaskRoute extends _i10.PageRouteInfo<AddTaskRouteArgs> {
 class AddTaskRouteArgs {
   const AddTaskRouteArgs({required this.toFilter, this.key});
 
-  final _i11.TaskFilter toFilter;
+  final InvalidType toFilter;
 
-  final _i12.Key? key;
+  final _i11.Key? key;
 
   @override
   String toString() {
     return 'AddTaskRouteArgs{toFilter: $toFilter, key: $key}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! AddTaskRouteArgs) return false;
+    return toFilter == other.toFilter && key == other.key;
+  }
+
+  @override
+  int get hashCode => toFilter.hashCode ^ key.hashCode;
 }
 
 /// generated route for

@@ -25,6 +25,7 @@ dependencies:
   hooks_riverpod: ^3.0.0
   implicitly_animated_reorderable_list_2: ^0.6.0
   intl: any # pinned by flutter sdk
+  json_annotation: ^4.9.0
   org_flutter: ^9.10.0
   org_parser: ^9.10.0
   path_provider_ffi: ^2.1.5-dev2
@@ -43,7 +44,7 @@ dev_dependencies:
     sdk: flutter
   freezed: ^3.2.3
   json_serializable: ^6.11.1
-  lintervention: ^0.4.0
+  lintervention: ^0.4.0+1
   rivership_test: ^0.2.0
 
 flutter: 

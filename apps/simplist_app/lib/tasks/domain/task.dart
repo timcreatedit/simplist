@@ -4,15 +4,13 @@ import 'package:simplist_app/common/data/json_converters/pb_date_converter.dart'
 part 'task.freezed.dart';
 part 'task.g.dart';
 
-enum ScheduleType {
-  /// The task is not scheduled and can be completed anytime
-  none,
+@JsonEnum(valueField: 'keyword')
+enum TaskStatus {
+  todo('TODO'),
+  done('DONE');
 
-  /// The task is scheduled for today
-  today,
-
-  /// The task is scheduled for a specific day.
-  on,
+  const TaskStatus(this.keyword);
+  final String keyword;
 }
 
 @freezed
@@ -20,16 +18,22 @@ sealed class Task with _$Task {
   const factory Task({
     required String id,
     required String title,
-    required DateTime created,
-    required DateTime updated,
-    @Default(ScheduleType.none) ScheduleType scheduled,
-    @NullablePbDateConverter() DateTime? completedOn,
-    @NullablePbDateConverter() DateTime? scheduledOn,
+    @Default(TaskStatus.todo) TaskStatus status,
+    @NullablePbDateConverter() DateTime? completedAt,
+    @Default([]) List<String> tags,
+    String? description,
+    @NullablePbDateConverter() DateTime? deadline,
+    @NullablePbDateConverter() DateTime? scheduled,
+    String? parentId,
+    @Default([]) List<Task> subtasks,
+    String? priority,
   }) = _Task;
 
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
 
   const Task._();
 
-  bool get completed => completedOn != null;
+  bool get isCompleted => status == TaskStatus.done;
+
+  bool get hasSubtasks => subtasks.isNotEmpty;
 }

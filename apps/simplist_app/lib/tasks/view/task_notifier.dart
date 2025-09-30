@@ -37,7 +37,7 @@ class TaskNotifier extends StreamNotifier<Task?> {
       }
     }
 
-    ref.listen($onDebounceFlush, (_, __) => _flush());
+    ref.listen($onDebounceFlush, (_, _) => _flush());
     final repo = await ref.watch($taskRepository.future);
     await for (final e in repo.watch(id)) {
       yield e;
