@@ -13,6 +13,7 @@ dependencies:
   auto_route: ^10.1.2
   clock: ^1.1.1
   collection: ^1.18.0
+  crypto: ^3.0.6
   flex_seed_scheme: ^3.1.2
   fluid_animations: ^1.0.0
   flutter:
