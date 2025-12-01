@@ -74,6 +74,8 @@ class OrgParser {
     DateTime? scheduled;
     DateTime? closed;
 
+    final subtasks = <Task>[];
+
     bool visitor(OrgNode node) {
       switch (node) {
         case OrgPlanningEntry(
@@ -91,6 +93,15 @@ class OrgParser {
           value: OrgSimpleTimestamp(dateTime: final dt),
         ):
           closed ??= dt;
+        case OrgList(:final items):
+          for (final item in items) {
+            if (item case final OrgListUnorderedItem item) {
+              final subtask = _parseSubtask(item);
+              if (subtask != null) {
+                subtasks.add(subtask);
+              }
+            }
+          }
         default:
           break;
       }
@@ -107,6 +118,25 @@ class OrgParser {
       completedAt: closed,
       deadline: deadline,
       scheduled: scheduled,
+      subtasks: subtasks,
+    );
+  }
+
+  Task? _parseSubtask(OrgListUnorderedItem item) {
+    final checked = switch (item.checkbox?.trim()) {
+      'X' || 'x' || '[x]' || '[X]' => true,
+      _ => false,
+    };
+    final title = item.body?.toMarkup().trim();
+
+    if (title == null) {
+      return null;
+    }
+
+    return Task(
+      id: item.id,
+      title: title,
+      status: checked ? TaskStatus.done : TaskStatus.todo,
     );
   }
 }

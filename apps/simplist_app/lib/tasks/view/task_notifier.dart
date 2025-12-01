@@ -14,6 +14,8 @@ final $focusedTaskId = StateProvider.autoDispose<String?>((ref) {
   return null;
 });
 
+final $id = $focusedTaskId.select((id) => id);
+
 final $task = StreamNotifierProvider.autoDispose.family(TaskNotifier.new);
 
 class TaskNotifier extends StreamNotifier<Task?> {
