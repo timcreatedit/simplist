@@ -30,6 +30,7 @@ dependencies:
   org_flutter: ^9.10.0
   org_parser: ^9.10.0
   path: ^1.9.1
+  path_provider: ^2.1.5
   path_provider_ffi: ^2.1.5-dev2
   pocketbase: ^0.18.1
   pocketbased: ^0.1.0
@@ -38,6 +39,7 @@ dependencies:
   rivership: ^0.4.0
   rxdart: ^0.28.0
   sliver_tools: ^0.2.12
+  uuid: ^4.5.2
   watcher: ^1.1.4
 
 dev_dependencies:

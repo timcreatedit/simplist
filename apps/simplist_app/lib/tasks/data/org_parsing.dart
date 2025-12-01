@@ -4,7 +4,7 @@ import 'package:simplist_app/tasks/domain/project.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
 
 class OrgParser {
-  Project parse(String orgContent) {
+  SavedProject parse(String orgContent, {String fileName = 'untitled.org'}) {
     final doc = OrgDocument.parse(orgContent);
 
     final meta = _extractMetadata(doc);
@@ -14,22 +14,22 @@ class OrgParser {
     }
 
     final tasks = _extractTasks(doc);
-    return Project(
+    return SavedProject(
       id: doc.id,
       title: meta.$1,
+      fileName: fileName,
       author: meta.$2,
       tasks: tasks,
     );
   }
 
   String serialize(Project project) {
-    final buffer = StringBuffer();
-
-    // Write metadata
-    buffer.writeln('#+title:  ${project.title}');
-    buffer.writeln('#+author: ${project.author ?? 'Unknown'}');
-    buffer.writeln('#+date:   ${_formatDate(DateTime.now())}');
-    buffer.writeln();
+    final buffer = StringBuffer()
+      // Write metadata
+      ..writeln('#+title:  ${project.title}')
+      ..writeln('#+author: ${project.author ?? 'Unknown'}')
+      ..writeln('#+date:   ${_formatDate(DateTime.now())}')
+      ..writeln();
 
     // Write tasks
     for (final task in project.tasks) {

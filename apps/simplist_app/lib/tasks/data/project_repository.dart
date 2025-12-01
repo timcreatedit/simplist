@@ -1,12 +1,26 @@
+// ignore_for_file: avoid_catches_without_on_clauses
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:simplist_app/tasks/data/file_watcher.dart';
 import 'package:simplist_app/tasks/data/org_parsing.dart';
 import 'package:simplist_app/tasks/domain/project.dart';
+
+final $projectsDirectory = FutureProvider<Directory>((ref) {
+  return getApplicationDocumentsDirectory();
+});
+
+final $projectRepository = FutureProvider<ProjectRepository>((ref) async {
+  return ProjectRepository(
+    directory: await ref.watch($projectsDirectory.future),
+  );
+});
 
 /// Repository that syncs projects between file system and memory.
 ///
@@ -19,6 +33,7 @@ import 'package:simplist_app/tasks/domain/project.dart';
 ///
 /// Design:
 /// - Each .org file = one Project
+/// - Project.fileName always matches the actual file
 /// - Repository emits `Stream<List<Project>>` for reactive UI
 /// - Caching is handled by Riverpod consumers
 class ProjectRepository {
@@ -84,12 +99,12 @@ class ProjectRepository {
   }
 
   /// Get all projects (loads fresh from disk).
-  Future<List<Project>> getAllProjects() async {
+  Future<List<SavedProject>> getAllProjects() async {
     return _loadAllProjects();
   }
 
   /// Get a specific project by file name.
-  Future<Project?> getProject(String fileName) async {
+  Future<SavedProject?> getProject(String fileName) async {
     final filePath = p.join(_directory.path, fileName);
     final file = File(filePath);
 
@@ -98,15 +113,21 @@ class ProjectRepository {
     }
 
     try {
-      return await _loadProjectFromFile(filePath);
+      return await _loadProjectFromFile(filePath, fileName);
     } catch (e) {
       return null;
     }
   }
 
   /// Create a new project and save it to disk.
-  Future<void> createProject(Project project, {String? fileName}) async {
-    final name = fileName ?? '${_sanitizeFileName(project.title)}.org';
+  ///
+  /// The project's fileName property is used as the file name.
+  /// If the file already exists, throws [ProjectAlreadyExistsException].
+  Future<SavedProject> createProject(
+    NewProject project, {
+    String? fileName,
+  }) async {
+    final name = fileName ?? '${project.title}.org';
     final filePath = p.join(_directory.path, name);
 
     // Check if file already exists
@@ -115,29 +136,35 @@ class ProjectRepository {
       throw ProjectAlreadyExistsException(name);
     }
 
-    await _writeProjectToFile(filePath, project);
+    final saved = await _writeProjectToFile(
+      filePath,
+      project,
+    );
     _fileHashes[filePath] = await _computeFileHash(filePath);
 
     // Reload and emit
     final projects = await _loadAllProjects();
     _projectsController.add(projects);
+
+    return saved;
   }
 
   /// Update an existing project.
   ///
+  /// The project's fileName property is used to locate the file.
+  ///
   /// This performs conflict detection:
   /// - If the file has been modified externally since last read, it throws
-  /// - Then applies the update and saves
+  /// - Use `force: true` to overwrite anyway
   Future<void> updateProject(
-    String fileName,
-    Project project, {
+    SavedProject project, {
     bool force = false,
   }) async {
-    final filePath = p.join(_directory.path, fileName);
+    final filePath = p.join(_directory.path, project.fileName);
     final file = File(filePath);
 
     if (!file.existsSync()) {
-      throw ProjectNotFoundException(fileName);
+      throw ProjectNotFoundException(project.fileName);
     }
 
     if (!force) {
@@ -148,7 +175,7 @@ class ProjectRepository {
       if (cachedHash != null && currentHash != cachedHash) {
         // File was modified externally
         throw ProjectConflictException(
-          fileName,
+          project.fileName,
           'File has been modified externally. Use force=true to overwrite.',
         );
       }
@@ -163,13 +190,56 @@ class ProjectRepository {
     _projectsController.add(projects);
   }
 
+  /// Rename a project file.
+  ///
+  /// This changes the fileName on disk and updates the project.
+  /// Returns the updated project with the new fileName.
+  Future<SavedProject> renameProject(
+    SavedProject project,
+    String newFileName,
+  ) async {
+    final oldFilePath = p.join(_directory.path, project.fileName);
+    final newFilePath = p.join(_directory.path, newFileName);
+
+    final oldFile = File(oldFilePath);
+    if (!oldFile.existsSync()) {
+      throw ProjectNotFoundException(project.fileName);
+    }
+
+    final newFile = File(newFilePath);
+    if (newFile.existsSync()) {
+      throw ProjectAlreadyExistsException(newFileName);
+    }
+
+    // Create updated project with new fileName
+    final updatedProject = project.copyWith(fileName: newFileName);
+
+    // Write to new location
+    await _writeProjectToFile(newFilePath, updatedProject);
+
+    // Delete old file
+    await oldFile.delete();
+
+    // Update hashes
+    _fileHashes.remove(oldFilePath);
+    _fileHashes[newFilePath] = await _computeFileHash(newFilePath);
+
+    // Reload and emit
+    final projects = await _loadAllProjects();
+    _projectsController.add(projects);
+
+    return updatedProject;
+  }
+
   /// Delete a project.
-  Future<void> deleteProject(String fileName) async {
-    final filePath = p.join(_directory.path, fileName);
+  ///
+  /// The project's fileName property is used to locate the file.
+  Future<void> deleteProject(SavedProject project) async {
+    final filePath = p.join(_directory.path, project.fileName);
     final file = File(filePath);
 
     if (!file.existsSync()) {
-      throw ProjectNotFoundException(fileName);
+      throw ProjectNotFoundException(project.fileName);
     }
 
     await file.delete();
@@ -204,7 +274,7 @@ class ProjectRepository {
 
   // Private methods
 
-  Future<List<Project>> _loadAllProjects() async {
+  Future<List<SavedProject>> _loadAllProjects() async {
     final dir = _directory;
 
     if (!dir.existsSync()) {
@@ -212,12 +282,13 @@ class ProjectRepository {
       return [];
     }
 
-    final projects = <Project>[];
+    final projects = <SavedProject>[];
 
     await for (final entity in dir.list()) {
       if (entity is File && entity.path.endsWith('.org')) {
         try {
-          final project = await _loadProjectFromFile(entity.path);
+          final fileName = p.basename(entity.path);
+          final project = await _loadProjectFromFile(entity.path, fileName);
           projects.add(project);
           _fileHashes[entity.path] = await _computeFileHash(entity.path);
         } catch (e) {
@@ -232,18 +303,26 @@ class ProjectRepository {
     return projects;
   }
 
-  Future<Project> _loadProjectFromFile(String filePath) async {
+  Future<SavedProject> _loadProjectFromFile(
+    String filePath,
+    String fileName,
+  ) async {
     final file = File(filePath);
     final content = await file.readAsString();
-    return _parser.parse(content);
+    final project = _parser.parse(content, fileName: fileName);
+
+    return project;
   }
 
-  Future<void> _writeProjectToFile(String filePath, Project project) async {
+  Future<SavedProject> _writeProjectToFile(
+    String filePath,
+    Project project,
+  ) async {
     // Cancel any pending write for this file
     _writeTimers[filePath]?.cancel();
 
     // Debounce the write
-    final completer = Completer<void>();
+    final completer = Completer<SavedProject>();
     _writeTimers[filePath] = Timer(_writeDebounceDuration, () async {
       _writeTimers.remove(filePath);
 
@@ -255,7 +334,9 @@ class ProjectRepository {
         await file.parent.create(recursive: true);
 
         await file.writeAsString(content);
-        completer.complete();
+
+        final saved = _parser.parse(content, fileName: p.basename(filePath));
+        completer.complete(saved);
       } catch (e) {
         completer.completeError(e);
       }
@@ -293,7 +374,7 @@ class ProjectRepository {
 
   Future<String> _computeFileHash(String filePath) async {
     final file = File(filePath);
-    if (!await file.exists()) {
+    if (!file.existsSync()) {
       return '';
     }
 
@@ -301,14 +382,6 @@ class ProjectRepository {
     final bytes = utf8.encode(content);
     final digest = sha256.convert(bytes);
     return digest.toString();
-  }
-
-  String _sanitizeFileName(String name) {
-    // Remove or replace invalid file name characters
-    return name
-        .replaceAll(RegExp(r'[<>:"/\\|?*]'), '_')
-        .replaceAll(RegExp(r'\s+'), '_')
-        .toLowerCase();
   }
 }
 

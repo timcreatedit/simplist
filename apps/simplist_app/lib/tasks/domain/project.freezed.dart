@@ -11,11 +11,34 @@ part of 'project.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+Project _$ProjectFromJson(
+  Map<String, dynamic> json
+) {
+        switch (json['runtimeType']) {
+                  case 'create':
+          return NewProject.fromJson(
+            json
+          );
+                case 'default':
+          return SavedProject.fromJson(
+            json
+          );
+        
+          default:
+            throw CheckedFromJsonException(
+  json,
+  'runtimeType',
+  'Project',
+  'Invalid union type "${json['runtimeType']}"!'
+);
+        }
+      
+}
 
 /// @nodoc
 mixin _$Project {
 
- String get id; String get title; List<Task> get tasks; String? get author;
+ String get title; List<Task> get tasks; String? get author;
 /// Create a copy of Project
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +51,16 @@ $ProjectCopyWith<Project> get copyWith => _$ProjectCopyWithImpl<Project>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Project&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&const DeepCollectionEquality().equals(other.tasks, tasks)&&(identical(other.author, author) || other.author == author));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Project&&(identical(other.title, title) || other.title == title)&&const DeepCollectionEquality().equals(other.tasks, tasks)&&(identical(other.author, author) || other.author == author));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,const DeepCollectionEquality().hash(tasks),author);
+int get hashCode => Object.hash(runtimeType,title,const DeepCollectionEquality().hash(tasks),author);
 
 @override
 String toString() {
-  return 'Project(id: $id, title: $title, tasks: $tasks, author: $author)';
+  return 'Project(title: $title, tasks: $tasks, author: $author)';
 }
 
 
@@ -48,7 +71,7 @@ abstract mixin class $ProjectCopyWith<$Res>  {
   factory $ProjectCopyWith(Project value, $Res Function(Project) _then) = _$ProjectCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, List<Task> tasks, String? author
+ String title, List<Task> tasks, String? author
 });
 
 
@@ -65,10 +88,9 @@ class _$ProjectCopyWithImpl<$Res>
 
 /// Create a copy of Project
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? tasks = null,Object? author = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? tasks = null,Object? author = freezed,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,tasks: null == tasks ? _self.tasks : tasks // ignore: cast_nullable_to_non_nullable
 as List<Task>,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -92,10 +114,11 @@ extension ProjectPatterns on Project {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Project value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( SavedProject value)?  $default,{TResult Function( NewProject value)?  create,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Project() when $default != null:
+case NewProject() when create != null:
+return create(_that);case SavedProject() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -114,10 +137,11 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Project value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( SavedProject value)  $default,{required TResult Function( NewProject value)  create,}){
 final _that = this;
 switch (_that) {
-case _Project():
+case NewProject():
+return create(_that);case SavedProject():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -132,10 +156,11 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Project value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( SavedProject value)?  $default,{TResult? Function( NewProject value)?  create,}){
 final _that = this;
 switch (_that) {
-case _Project() when $default != null:
+case NewProject() when create != null:
+return create(_that);case SavedProject() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -153,10 +178,11 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  List<Task> tasks,  String? author)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String fileName,  List<Task> tasks,  String? author)?  $default,{TResult Function( String title,  List<Task> tasks,  String? author)?  create,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Project() when $default != null:
-return $default(_that.id,_that.title,_that.tasks,_that.author);case _:
+case NewProject() when create != null:
+return create(_that.title,_that.tasks,_that.author);case SavedProject() when $default != null:
+return $default(_that.id,_that.title,_that.fileName,_that.tasks,_that.author);case _:
   return orElse();
 
 }
@@ -174,10 +200,11 @@ return $default(_that.id,_that.title,_that.tasks,_that.author);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  List<Task> tasks,  String? author)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String fileName,  List<Task> tasks,  String? author)  $default,{required TResult Function( String title,  List<Task> tasks,  String? author)  create,}) {final _that = this;
 switch (_that) {
-case _Project():
-return $default(_that.id,_that.title,_that.tasks,_that.author);}
+case NewProject():
+return create(_that.title,_that.tasks,_that.author);case SavedProject():
+return $default(_that.id,_that.title,_that.fileName,_that.tasks,_that.author);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -191,10 +218,11 @@ return $default(_that.id,_that.title,_that.tasks,_that.author);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  List<Task> tasks,  String? author)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String fileName,  List<Task> tasks,  String? author)?  $default,{TResult? Function( String title,  List<Task> tasks,  String? author)?  create,}) {final _that = this;
 switch (_that) {
-case _Project() when $default != null:
-return $default(_that.id,_that.title,_that.tasks,_that.author);case _:
+case NewProject() when create != null:
+return create(_that.title,_that.tasks,_that.author);case SavedProject() when $default != null:
+return $default(_that.id,_that.title,_that.fileName,_that.tasks,_that.author);case _:
   return null;
 
 }
@@ -205,14 +233,13 @@ return $default(_that.id,_that.title,_that.tasks,_that.author);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _Project extends Project {
-  const _Project({required this.id, required this.title, required final  List<Task> tasks, this.author}): _tasks = tasks,super._();
-  factory _Project.fromJson(Map<String, dynamic> json) => _$ProjectFromJson(json);
+class NewProject extends Project {
+  const NewProject({required this.title, final  List<Task> tasks = const [], this.author, final  String? $type}): _tasks = tasks,$type = $type ?? 'create',super._();
+  factory NewProject.fromJson(Map<String, dynamic> json) => _$NewProjectFromJson(json);
 
-@override final  String id;
 @override final  String title;
  final  List<Task> _tasks;
-@override List<Task> get tasks {
+@override@JsonKey() List<Task> get tasks {
   if (_tasks is EqualUnmodifiableListView) return _tasks;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_tasks);
@@ -220,40 +247,44 @@ class _Project extends Project {
 
 @override final  String? author;
 
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
 /// Create a copy of Project
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$ProjectCopyWith<_Project> get copyWith => __$ProjectCopyWithImpl<_Project>(this, _$identity);
+$NewProjectCopyWith<NewProject> get copyWith => _$NewProjectCopyWithImpl<NewProject>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$ProjectToJson(this, );
+  return _$NewProjectToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Project&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&const DeepCollectionEquality().equals(other._tasks, _tasks)&&(identical(other.author, author) || other.author == author));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewProject&&(identical(other.title, title) || other.title == title)&&const DeepCollectionEquality().equals(other._tasks, _tasks)&&(identical(other.author, author) || other.author == author));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,const DeepCollectionEquality().hash(_tasks),author);
+int get hashCode => Object.hash(runtimeType,title,const DeepCollectionEquality().hash(_tasks),author);
 
 @override
 String toString() {
-  return 'Project(id: $id, title: $title, tasks: $tasks, author: $author)';
+  return 'Project.create(title: $title, tasks: $tasks, author: $author)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ProjectCopyWith<$Res> implements $ProjectCopyWith<$Res> {
-  factory _$ProjectCopyWith(_Project value, $Res Function(_Project) _then) = __$ProjectCopyWithImpl;
+abstract mixin class $NewProjectCopyWith<$Res> implements $ProjectCopyWith<$Res> {
+  factory $NewProjectCopyWith(NewProject value, $Res Function(NewProject) _then) = _$NewProjectCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, List<Task> tasks, String? author
+ String title, List<Task> tasks, String? author
 });
 
 
@@ -261,19 +292,105 @@ $Res call({
 
 }
 /// @nodoc
-class __$ProjectCopyWithImpl<$Res>
-    implements _$ProjectCopyWith<$Res> {
-  __$ProjectCopyWithImpl(this._self, this._then);
+class _$NewProjectCopyWithImpl<$Res>
+    implements $NewProjectCopyWith<$Res> {
+  _$NewProjectCopyWithImpl(this._self, this._then);
 
-  final _Project _self;
-  final $Res Function(_Project) _then;
+  final NewProject _self;
+  final $Res Function(NewProject) _then;
 
 /// Create a copy of Project
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? tasks = null,Object? author = freezed,}) {
-  return _then(_Project(
+@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? tasks = null,Object? author = freezed,}) {
+  return _then(NewProject(
+title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,tasks: null == tasks ? _self._tasks : tasks // ignore: cast_nullable_to_non_nullable
+as List<Task>,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class SavedProject extends Project {
+  const SavedProject({required this.id, required this.title, required this.fileName, final  List<Task> tasks = const [], this.author, final  String? $type}): _tasks = tasks,$type = $type ?? 'default',super._();
+  factory SavedProject.fromJson(Map<String, dynamic> json) => _$SavedProjectFromJson(json);
+
+ final  String id;
+@override final  String title;
+ final  String fileName;
+ final  List<Task> _tasks;
+@override@JsonKey() List<Task> get tasks {
+  if (_tasks is EqualUnmodifiableListView) return _tasks;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_tasks);
+}
+
+@override final  String? author;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of Project
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SavedProjectCopyWith<SavedProject> get copyWith => _$SavedProjectCopyWithImpl<SavedProject>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SavedProjectToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SavedProject&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.fileName, fileName) || other.fileName == fileName)&&const DeepCollectionEquality().equals(other._tasks, _tasks)&&(identical(other.author, author) || other.author == author));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,title,fileName,const DeepCollectionEquality().hash(_tasks),author);
+
+@override
+String toString() {
+  return 'Project(id: $id, title: $title, fileName: $fileName, tasks: $tasks, author: $author)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SavedProjectCopyWith<$Res> implements $ProjectCopyWith<$Res> {
+  factory $SavedProjectCopyWith(SavedProject value, $Res Function(SavedProject) _then) = _$SavedProjectCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String title, String fileName, List<Task> tasks, String? author
+});
+
+
+
+
+}
+/// @nodoc
+class _$SavedProjectCopyWithImpl<$Res>
+    implements $SavedProjectCopyWith<$Res> {
+  _$SavedProjectCopyWithImpl(this._self, this._then);
+
+  final SavedProject _self;
+  final $Res Function(SavedProject) _then;
+
+/// Create a copy of Project
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? fileName = null,Object? tasks = null,Object? author = freezed,}) {
+  return _then(SavedProject(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,fileName: null == fileName ? _self.fileName : fileName // ignore: cast_nullable_to_non_nullable
 as String,tasks: null == tasks ? _self._tasks : tasks // ignore: cast_nullable_to_non_nullable
 as List<Task>,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String?,

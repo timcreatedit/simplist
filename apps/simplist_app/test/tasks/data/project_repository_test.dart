@@ -42,10 +42,8 @@ void main() {
       test('createProject saves project to file', () async {
         await repository.initialize();
 
-        const project = Project(
-          id: 'test-1',
+        const project = NewProject(
           title: 'Test Project',
-          tasks: [],
         );
 
         await repository.createProject(project, fileName: 'test.org');
@@ -62,17 +60,15 @@ void main() {
       test('createProject throws if file already exists', () async {
         await repository.initialize();
 
-        const project = Project(
-          id: 'test-1',
+        const project = NewProject(
           title: 'Test Project',
-          tasks: [],
         );
 
-        await repository.createProject(project, fileName: 'test.org');
+        await repository.createProject(project);
 
         // Try to create again
         expect(
-          () => repository.createProject(project, fileName: 'test.org'),
+          () => repository.createProject(project),
           throwsA(isA<ProjectAlreadyExistsException>()),
         );
       });
@@ -86,8 +82,7 @@ void main() {
       test('getProject loads project from file', () async {
         await repository.initialize();
 
-        const project = Project(
-          id: 'test-1',
+        const project = NewProject(
           title: 'Test Project',
           author: 'Test Author',
           tasks: [
@@ -103,6 +98,7 @@ void main() {
         final loaded = await repository.getProject('test.org');
         expect(loaded, isNotNull);
         expect(loaded!.title, 'Test Project');
+        expect(loaded.fileName, 'test.org');
         expect(loaded.author, 'Test Author');
         expect(loaded.tasks.length, 1);
         expect(loaded.tasks.first.title, 'Test Task');
@@ -111,32 +107,33 @@ void main() {
       test('updateProject modifies existing file', () async {
         await repository.initialize();
 
-        const project = Project(
-          id: 'test-1',
+        const project = NewProject(
           title: 'Original Title',
-          tasks: [],
         );
 
-        await repository.createProject(project, fileName: 'test.org');
+        await repository.createProject(project);
 
-        final updated = project.copyWith(title: 'Updated Title');
-        await repository.updateProject('test.org', updated, force: true);
+        final savedProject = await repository.getProject('Original Title.org');
 
-        final loaded = await repository.getProject('test.org');
+        final updated = savedProject!.copyWith(title: 'Updated Title');
+        await repository.updateProject(updated, force: true);
+
+        final loaded = await repository.getProject('Original Title.org');
         expect(loaded!.title, 'Updated Title');
       });
 
       test('updateProject throws for non-existent file', () async {
         await repository.initialize();
 
-        const project = Project(
+        const project = SavedProject(
           id: 'test-1',
           title: 'Test',
+          fileName: 'nonexistent.org',
           tasks: [],
         );
 
         expect(
-          () => repository.updateProject('nonexistent.org', project),
+          () => repository.updateProject(project),
           throwsA(isA<ProjectNotFoundException>()),
         );
       });
@@ -144,26 +141,55 @@ void main() {
       test('deleteProject removes file', () async {
         await repository.initialize();
 
-        const project = Project(
-          id: 'test-1',
+        const project = NewProject(
           title: 'Test Project',
-          tasks: [],
         );
 
-        await repository.createProject(project, fileName: 'test.org');
-        await repository.deleteProject('test.org');
+        final created = await repository.createProject(project);
+        await repository.deleteProject(created);
 
-        final file = File(p.join(tempDir.path, 'test.org'));
+        final file = File(p.join(tempDir.path, 'Test Project.org'));
         expect(file.existsSync(), isFalse);
       });
 
       test('deleteProject throws for non-existent file', () async {
         await repository.initialize();
 
+        const project = SavedProject(
+          id: 'test-1',
+          title: 'Test Project',
+          fileName: 'nonexistent.org',
+          tasks: [],
+        );
+
         expect(
-          () => repository.deleteProject('nonexistent.org'),
+          () => repository.deleteProject(project),
           throwsA(isA<ProjectNotFoundException>()),
         );
+      });
+
+      test('renameProject changes fileName', () async {
+        await repository.initialize();
+
+        const project = NewProject(
+          title: 'Test Project',
+          tasks: [],
+        );
+
+        final saved = await repository.createProject(project);
+
+        final renamed = await repository.renameProject(saved, 'new.org');
+
+        expect(renamed.fileName, 'new.org');
+        expect(renamed.title, 'Test Project');
+
+        // Old file should be gone
+        final oldFile = File(p.join(tempDir.path, 'old.org'));
+        expect(oldFile.existsSync(), isFalse);
+
+        // New file should exist
+        final newFile = File(p.join(tempDir.path, 'new.org'));
+        expect(newFile.existsSync(), isTrue);
       });
     });
 
@@ -171,19 +197,17 @@ void main() {
       test('getAllProjects returns all projects', () async {
         await repository.initialize();
 
-        const project1 = Project(
-          id: 'test-1',
+        const project1 = NewProject(
           title: 'Project 1',
           tasks: [],
         );
-        const project2 = Project(
-          id: 'test-2',
+        const project2 = NewProject(
           title: 'Project 2',
           tasks: [],
         );
 
-        await repository.createProject(project1, fileName: 'project1.org');
-        await repository.createProject(project2, fileName: 'project2.org');
+        await repository.createProject(project1);
+        await repository.createProject(project2);
 
         final projects = await repository.getAllProjects();
         expect(projects.length, 2);
@@ -191,21 +215,24 @@ void main() {
           projects.map((p) => p.title),
           containsAll(['Project 1', 'Project 2']),
         );
+        expect(
+          projects.map((p) => p.fileName),
+          containsAll(['Project 1.org', 'Project 2.org']),
+        );
       });
 
       test('reload refreshes all projects from disk', () async {
         await repository.initialize();
 
-        const project = Project(
-          id: 'test-1',
+        const project = NewProject(
           title: 'Original',
           tasks: [],
         );
 
-        await repository.createProject(project, fileName: 'test.org');
+        await repository.createProject(project);
 
         // Modify file externally
-        final file = File(p.join(tempDir.path, 'test.org'));
+        final file = File(p.join(tempDir.path, 'original.org'));
         final content = await file.readAsString();
         final modified = content.replaceAll('Original', 'Modified');
         await file.writeAsString(modified);
@@ -214,7 +241,7 @@ void main() {
         await repository.reload();
 
         // Verify
-        final loaded = await repository.getProject('test.org');
+        final loaded = await repository.getProject('original.org');
         expect(loaded!.title, 'Modified');
       });
     });
@@ -236,8 +263,7 @@ void main() {
       test('create and load preserves task structure', () async {
         await repository.initialize();
 
-        const project = Project(
-          id: 'test-1',
+        const project = NewProject(
           title: 'Complex Project',
           author: 'Test Author',
           tasks: [
@@ -269,11 +295,12 @@ void main() {
           ],
         );
 
-        await repository.createProject(project, fileName: 'complex.org');
-        final loaded = await repository.getProject('complex.org');
+        await repository.createProject(project);
+        final loaded = await repository.getProject('Complex Project.org');
 
         expect(loaded, isNotNull);
         expect(loaded!.title, project.title);
+        expect(loaded.fileName, 'Complex Project.org');
         expect(loaded.author, project.author);
         expect(loaded.tasks.length, project.tasks.length);
 

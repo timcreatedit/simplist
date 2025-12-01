@@ -3,53 +3,56 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simplist_app/common/view/debounce_provider.dart';
+import 'package:simplist_app/tasks/data/project_repository.dart';
+import 'package:simplist_app/tasks/domain/project.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
-import 'package:simplist_app/tasks/domain/task_filter.dart';
-import 'package:simplist_app/tasks/domain/tasks_repository.dart';
+import 'package:uuid/uuid.dart';
 
-final $tasks = StreamNotifierProvider.autoDispose.family(Tasks.new);
+final $projects = StreamNotifierProvider.autoDispose(
+  Projects.new,
+);
 
-class Tasks extends StreamNotifier<List<Task>> {
-  Tasks(this.arg);
+class Projects extends StreamNotifier<List<Project>> {
+  Projects();
 
-  final TaskFilter arg;
   @override
-  Stream<List<Task>> build() async* {
-    final repo = await ref.watch($taskRepository.future);
+  Stream<List<Project>> build() async* {
+    final repo = await ref.watch($projectRepository.future);
 
-    await for (final e in repo.watchAll(filter: arg)) {
-      // Ignore updates while debouncing
-      if (ref.read($debounce) == false) yield e;
-    }
+    yield* repo.projects;
   }
 
-  Future<Task> create({
-    required String title,
-    required ScheduleType scheduled,
-  }) async {
-    final repo = await ref.read($taskRepository.future);
-    return repo.create(title: title, scheduled: scheduled);
+  Future<void> create({required String title}) async {
+    final repo = await ref.watch($projectRepository.future);
+    state = const AsyncLoading();
+    await repo.createProject(
+      Project(
+        id: const Uuid().v7(),
+        title: title,
+        tasks: [],
+      ),
+    );
   }
 }
 
-// TODO(tim): here
-class SelectedTasks extends Notifier<Set<String>> {
-  SelectedTasks(this.arg);
+final $singleProject = AsyncNotifierProvider.autoDispose.family(
+  SingleProject.new,
+);
 
-  final TaskFilter arg;
+class SingleProject extends AsyncNotifier<Project?> {
+  SingleProject(this.id);
+
+  final String id;
 
   @override
-  Set<String> build() {
-    return {};
+  Future<Project?> build() async {
+    final projects = await ref.watch($projects.future);
+    return projects.firstWhereOrNull((p) => p.id == id);
   }
 
-  void toggle(String id) {
-    state = state.contains(id)
-        ? {...state.whereNot((s) => s == id)}
-        : {...state, id};
-  }
-
-  void clear() {
-    state = {};
+  Future<void> save(Project project) async {
+    final repo = await ref.watch($projectRepository.future);
+    state = const AsyncLoading();
+    await repo.updateProject(project);
   }
 }

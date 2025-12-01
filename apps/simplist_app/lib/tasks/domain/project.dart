@@ -9,9 +9,16 @@ sealed class Project with _$Project {
   const factory Project({
     required String id,
     required String title,
-    required List<Task> tasks,
+    required String fileName,
+    @Default([]) List<Task> tasks,
     String? author,
-  }) = _Project;
+  }) = SavedProject;
+
+  const factory Project.create({
+    required String title,
+    @Default([]) List<Task> tasks,
+    String? author,
+  }) = NewProject;
 
   factory Project.fromJson(Map<String, dynamic> json) =>
       _$ProjectFromJson(json);
