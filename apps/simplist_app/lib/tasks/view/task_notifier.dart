@@ -8,7 +8,7 @@ import 'package:simplist_app/common/view/debounce_provider.dart';
 import 'package:simplist_app/tasks/domain/task.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/domain/tasks_repository.dart';
-import 'package:simplist_app/tasks/view/tasks_providers.dart';
+import 'package:simplist_app/tasks/view/projects_providers.dart';
 
 final $focusedTaskId = StateProvider.autoDispose<String?>((ref) {
   return null;

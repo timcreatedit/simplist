@@ -6,7 +6,7 @@ import 'package:simplist_app/common/routing/on_any_observer.dart';
 import 'package:simplist_app/home/view/widgets/home_navigation_bar.dart';
 import 'package:simplist_app/tasks/domain/task_filter.dart';
 import 'package:simplist_app/tasks/view/task_notifier.dart';
-import 'package:simplist_app/tasks/view/tasks_providers.dart';
+import 'package:simplist_app/tasks/view/projects_providers.dart';
 import 'package:simplist_app/tasks/view/widgets/unselected_dimmer.dart';
 
 @RoutePage()

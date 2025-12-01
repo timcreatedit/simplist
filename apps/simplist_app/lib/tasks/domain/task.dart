@@ -36,4 +36,16 @@ sealed class Task with _$Task {
   bool get isCompleted => status == TaskStatus.done;
 
   bool get hasSubtasks => subtasks.isNotEmpty;
+
+  String get searchString {
+    final buffer = StringBuffer()..writeln(title);
+    if (description != null) {
+      buffer.writeln(description);
+    }
+    tags.forEach(buffer.writeln);
+    for (final subtask in subtasks) {
+      buffer.writeln(subtask.searchString);
+    }
+    return buffer.toString();
+  }
 }

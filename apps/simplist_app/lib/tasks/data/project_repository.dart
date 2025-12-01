@@ -50,7 +50,7 @@ class ProjectRepository {
   final OrgParser _parser;
   final OrgFileWatcher _watcher;
 
-  final _projectsController = StreamController<List<Project>>.broadcast();
+  final _projectsController = StreamController<List<SavedProject>>.broadcast();
   final _writeTimers = <String, Timer>{};
   final _fileHashes = <String, String>{};
 
@@ -58,7 +58,7 @@ class ProjectRepository {
   bool _isWatching = false;
 
   /// Stream of all projects. Emits when projects change.
-  Stream<List<Project>> get projects => _projectsController.stream;
+  Stream<List<SavedProject>> get projects => _projectsController.stream;
 
   /// Initialize the repository by loading all projects from disk.
   Future<void> initialize() async {

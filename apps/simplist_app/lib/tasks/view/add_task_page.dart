@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rivership/rivership.dart';
 import 'package:simplist_app/common/view/extensions/context_convenience.dart';
-import 'package:simplist_app/tasks/domain/task_filter.dart';
-import 'package:simplist_app/tasks/view/tasks_providers.dart';
+import 'package:simplist_app/tasks/view/projects_providers.dart';
 import 'package:simplist_app/tasks/view/widgets/task_edit_card.dart';
 
 @RoutePage()
 class AddTaskPage extends HookConsumerWidget {
-  const AddTaskPage({required this.toFilter, super.key});
-
-  final TaskFilter toFilter;
+  const AddTaskPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
