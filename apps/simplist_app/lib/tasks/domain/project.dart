@@ -10,6 +10,7 @@ sealed class Project with _$Project {
     required String id,
     required String title,
     required List<Task> tasks,
+    String? author,
   }) = _Project;
 
   factory Project.fromJson(Map<String, dynamic> json) =>

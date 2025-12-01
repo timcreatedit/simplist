@@ -12,10 +12,12 @@ _Project _$ProjectFromJson(Map<String, dynamic> json) => _Project(
   tasks: (json['tasks'] as List<dynamic>)
       .map((e) => Task.fromJson(e as Map<String, dynamic>))
       .toList(),
+  author: json['author'] as String?,
 );
 
 Map<String, dynamic> _$ProjectToJson(_Project instance) => <String, dynamic>{
   'id': instance.id,
   'title': instance.title,
   'tasks': instance.tasks,
+  'author': instance.author,
 };
