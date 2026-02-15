@@ -2,24 +2,26 @@ name: units
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
-resolution: workspace
 
 environment:
   sdk: ^3.10.3
 
 dependencies:
   dart_mappable: ^4.6.1
+  drift: ^2.30.0
+  drift_flutter: ^0.2.8
   flutter:
     sdk: flutter
   flutter_hooks: ^0.21.3+1
   hooks_riverpod: ^3.0.3
   rivership: ^0.4.0+1
+  zenrouter: ^0.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: ^2.5.4
+  build_runner: ^2.10.4
   dart_mappable_builder: ^4.5.0
   snaptest: ^0.2.2+1
 

@@ -9,7 +9,6 @@ environment:
 
 workspace:
   - apps/simplist_app/
-  - apps/units/
   - packages/pocketbased/
   
 dev_dependencies:
